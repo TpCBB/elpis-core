@@ -54,7 +54,7 @@ module.exports = {
     // 加载配置
     configLoader(app);
     console.log(`-- [start] configLoader done --`);
-
+    
     // 加载路由Schema
     routerSchemaLoader(app);
     console.log(`-- [start] routerSchemaLoader done --`);

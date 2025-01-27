@@ -49,7 +49,7 @@ module.exports = (app) => {
       s.substring(1).toUpperCase()
     );
 
-    // 把文件内容加载到 middlewares 对象上
+    // 把文件名转换成数组
     let fileNames = fileName.split(sep);
 
     // [custom-module, custom-middleware] = > { customModule: { customMiddleware: require(文件地址) } }
