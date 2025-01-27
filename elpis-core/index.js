@@ -54,10 +54,18 @@ module.exports = {
     // 加载配置
     configLoader(app);
     console.log(`-- [start] configLoader done --`);
-    
+
     // 加载路由Schema
     routerSchemaLoader(app);
     console.log(`-- [start] routerSchemaLoader done --`);
+
+    // 加载全局中间件
+    try {
+      require(`${app.businessDir}${sep}middleware.js}`)(app);
+      console.log(`-- [start] load global middleware done`);
+    } catch (error) {
+      console.log(`[execption] global middleware.js not found`);
+    }
 
     // 注册路由(加载路由之前要加载中间件)
     routerLoader(app);
