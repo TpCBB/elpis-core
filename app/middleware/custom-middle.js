@@ -1,1 +1,3 @@
-console.log(`output->load---------custom-middle`);
+module.exports = (app) => {
+  console.log(`output->load---------custom-middle`);
+};

@@ -24,9 +24,9 @@ const glob = require("glob"); // 读取目录下的所有文件
  */
 module.exports = (app) => {
   // 读取 app/controller/**/**.js目录下的所有文件
-  const controllerPath = path.resolve(app.businessDir, `${sep}controller`);
+  const controllerPath = path.resolve(app.businessDir, `.${sep}controller`);
   const fileList = glob.sync(
-    path.resolve(controllerPath, `${sep}**${sep}**.js`)
+    path.resolve(controllerPath, `.${sep}**${sep}**.js`)
   );
 
   // 初始化 controller 对象 最终要挂在到 app 实例上

@@ -22,8 +22,8 @@ const glob = require("glob"); // 读取目录下的所有文件
  */
 module.exports = (app) => {
   // 读取 app/extend/**.js目录下的所有文件
-  const extendPath = path.resolve(app.businessDir, `${sep}extend`);
-  const fileList = glob.sync(path.resolve(extendPath, `${sep}**${sep}**.js`));
+  const extendPath = path.resolve(app.businessDir, `.${sep}extend`);
+  const fileList = glob.sync(path.resolve(extendPath, `.${sep}**${sep}**.js`));
 
   // 遍历所有文件目录 把extend挂载到app实例上
   fileList.forEach((file) => {

@@ -24,9 +24,9 @@ const glob = require("glob"); // 读取目录下的所有文件
  */
 module.exports = (app) => {
   // 读取 app/middleware/**/**.js目录下的所有文件
-  const middlewarePath = path.resolve(app.businessDir, `${sep}middleware`);
+  const middlewarePath = path.resolve(app.businessDir, `.${sep}middleware`);
   const fileList = glob.sync(
-    path.resolve(middlewarePath, `${sep}**${sep}**.js`)
+    path.resolve(middlewarePath, `.${sep}**${sep}**.js`)
   );
 
   // 初始化 middleware 对象 最终要挂在到 app 实例上

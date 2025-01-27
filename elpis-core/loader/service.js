@@ -24,9 +24,9 @@ const glob = require("glob"); // 读取目录下的所有文件
  */
 module.exports = (app) => {
   // 读取 app/service/**/**.js目录下的所有文件
-  const servicePath = path.resolve(app.businessDir, `${sep}service`);
+  const servicePath = path.resolve(app.businessDir, `.${sep}service`);
   const fileList = glob.sync(
-    path.resolve(servicePath, `${sep}**${sep}**.js`)
+    path.resolve(servicePath, `.${sep}**${sep}**.js`)
   );
 
   // 初始化 service 对象 最终要挂在到 app 实例上

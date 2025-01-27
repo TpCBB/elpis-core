@@ -20,14 +20,13 @@ const { sep } = require("path");
 
 module.exports = (app) => {
   // 获取 config 目录
-  const configPath = path.resolve(app.baseDir, `${sep}config`);
-
+  const configPath = path.resolve(app.baseDir, `.${sep}config`);
   // 获取 default.config
   let defaultConfig = {};
   try {
     defaultConfig = require(path.resolve(
       configPath,
-      `${sep}config.default.js`
+      `.${sep}config.default.js`
     ));
   } catch (error) {
     console.log(`[exception] config.default.js not found`);
@@ -36,15 +35,15 @@ module.exports = (app) => {
   // 根据环境 获取 env.config
   let envConfig = {};
   try {
-    if (app.isLocal()) {
-      envConfig = require(path.resolve(configPath, `${sep}config.local.js`));
-    } else if (app.isBeta()) {
-      envConfig = require(path.resolve(configPath, `${sep}config.beta.js`));
-    } else if (app.isProd()) {
-      envConfig = require(path.resolve(configPath, `${sep}config.prod.js`));
+    if (app.env.isLocal()) {
+      envConfig = require(path.resolve(configPath, `.${sep}config.local.js`));
+    } else if (app.env.isBeta()) {
+      envConfig = require(path.resolve(configPath, `.${sep}config.beta.js`));
+    } else if (app.env.isProd()) {
+      envConfig = require(path.resolve(configPath, `.${sep}config.prod.js`));
     }
   } catch (error) {
-    console.log(`[exception] config.${app.env}.js not found`);
+    console.log(`[exception] config.${app.env.get()}.js not found`);
   }
   // 合并 default.config 和 env.config 到 app.config 上
   app.config = Object.assign({}, defaultConfig, envConfig);
