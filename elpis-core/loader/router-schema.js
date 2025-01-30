@@ -19,7 +19,7 @@ const { sep } = path;
  */
 module.exports = (app) => {
   // 读取 router-schema下所有的文件
-  const routerSchemaPath = path.resolve(app.businessDir, `.${sep}router-schema`);
+  const routerSchemaPath = path.resolve(app.businessDir, `${sep}router-schema`);
   const fileList = glob.sync(
     path.resolve(routerSchemaPath, `${sep}**${sep}**.js`)
   );

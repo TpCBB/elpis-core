@@ -1,7 +1,7 @@
 const Koa = require("koa");
 const path = require("path");
 const { sep } = path; // 路径分隔符, 在windows下是 \ 在mac下是 / 兼容斜杠
-const env = require("./env"); // 环境变量
+const Env = require("./env"); // 环境变量
 
 const middlewareLoader = require("./loader/middleware"); // 中间件
 const serviceLoader = require("./loader/service"); // 服务
@@ -32,8 +32,8 @@ module.exports = {
     console.log(`output->businessDir`, app.businessDir);
 
     // 获取环境
-    app.env = env();
-    console.log(`-- [start] env: ${app.env.get()} --`);
+    app.env = Env.get();
+    console.log(`-- [start] env: ${app.env} --`);
 
     // 加载中间件
     middlewareLoader(app);
@@ -61,10 +61,9 @@ module.exports = {
 
     // 加载全局中间件
     try {
-      require(`${app.businessDir}${sep}middleware.js`)(app);
+      require(`${app.businessDir}${sep}middleware.js}`)(app);
       console.log(`-- [start] load global middleware done`);
     } catch (error) {
-      console.log(`output->error`, error);
       console.log(`[execption] global middleware.js not found`);
     }
 
