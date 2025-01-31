@@ -17,8 +17,7 @@ module.exports = (app) => {
   // 找到router的文件路径
   const routerPath = path.resolve(app.businessDir, `.${sep}router`);
   // router目录下所有文件
-  const fileList = glob.sync(path.resolve(routerPath), `.${sep}**${sep}**.js`);
-
+  const fileList = glob.sync(path.resolve(routerPath, `.${sep}**${sep}**.js`));
   // 实例化koarouter
   const router = new KoaRouter();
 
