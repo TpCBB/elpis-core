@@ -2,4 +2,6 @@
 const ElpisCore = require("./elpis-core");
 
 // 启动服务
-ElpisCore.start();
+ElpisCore.start({
+    name:"tpc"
+});

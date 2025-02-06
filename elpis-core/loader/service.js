@@ -57,8 +57,8 @@ module.exports = (app) => {
     for (let i = 0; i < fileNames.length; i++) {
       if (i == fileNames.length - 1) {
         // 最终文件
-        const ControllerModule = require(path.resolve(file))(app); // service 是一个class
-        temService[fileNames[i]] = new ControllerModule(); // 实例化
+        const ServiceModule = require(path.resolve(file))(app); // service 是一个class
+        temService[fileNames[i]] = new ServiceModule(); // 实例化
       } else {
         // 文件夹
         if (!temService[fileNames[i]]) {
