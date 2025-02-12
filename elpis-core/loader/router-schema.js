@@ -21,11 +21,10 @@ module.exports = (app) => {
   // 读取 router-schema下所有的文件
   const routerSchemaPath = path.resolve(app.businessDir, `.${sep}router-schema`);
   const fileList = glob.sync(
-    path.resolve(routerSchemaPath, `${sep}**${sep}**.js`)
+    path.resolve(routerSchemaPath, `.${sep}**${sep}**.js`)
   );
-
   //注册所有router-schema
-  const routerSchema = {};
+  let routerSchema = {};
   fileList.forEach((file) => {
     routerSchema = {
       ...routerSchema,

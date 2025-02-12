@@ -58,7 +58,6 @@ module.exports = {
     // 加载路由Schema
     routerSchemaLoader(app);
     console.log(`-- [start] routerSchemaLoader done --`);
-
     // 加载全局中间件
     try {
       require(`${app.businessDir}${sep}middleware.js`)(app);
@@ -75,7 +74,7 @@ module.exports = {
     // 启动服务
     try {
       const port = process.env.PORT || 8080;
-      const host = process.env.HOST || "0.0.0.0";
+      const host = process.env.HOST || "127.0.0.1";
       app.listen(port, host);
       console.log(`服务启动成功, 监听端口: http://${host}:${port}`);
     } catch (error) {

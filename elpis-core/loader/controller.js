@@ -28,7 +28,6 @@ module.exports = (app) => {
   const fileList = glob.sync(
     path.resolve(controllerPath, `.${sep}**${sep}**.js`)
   );
-
   // 初始化 controller 对象 最终要挂在到 app 实例上
   const controller = {};
 

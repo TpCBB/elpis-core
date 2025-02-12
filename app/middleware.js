@@ -25,4 +25,13 @@ module.exports = (app) => {
       enableTypes: ["form", "json", "text"],
     })
   );
+
+  // 错误处理
+  app.use(app.middlewares.errorHandler);
+
+  // API 签名合法性校验
+  app.use(app.middlewares.apiSignVerify);
+
+  // API 参数校验
+  app.use(app.middlewares.apiParamsVerify);
 };

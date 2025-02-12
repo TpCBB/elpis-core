@@ -1,0 +1,64 @@
+const Ajv = require("ajv");
+const ajv = new Ajv();
+/**
+ * 参数校验
+ */
+module.exports = (app) => {
+  return async (ctx, next) => {
+    const $schema = "http://json-schema.org/draft-07/schema#";
+
+    if (ctx.path.indexOf("/api") < 0) {
+      return await next();
+    }
+    const { body, query, headers } = ctx.request;
+    const { params, path, method } = ctx;
+
+    app.logger.info(`[${method}${path}] body:${JSON.stringify(body)}`);
+    app.logger.info(`[${method}${path}] query:${JSON.stringify(query)}`);
+    app.logger.info(`[${method}${path}] headers:${JSON.stringify(headers)}`);
+    app.logger.info(`[${method}${path}] params:${JSON.stringify(params)}`);
+
+    const schema = app.routerSchema[path]?.[method.toLowerCase()];
+
+    if (!schema) {
+      return await next();
+    }
+
+    let valid = true;
+
+    // 校验器
+    let validate;
+
+    if (valid && body && schema.body) {
+      schema.body.$schema = $schema;
+      validate = ajv.compile(schema.body);
+      valid = validate(body);
+    }
+    if (valid && params && schema.params) {
+      schema.params.$schema = $schema;
+      validate = ajv.compile(schema.params);
+      valid = validate(params);
+    }
+    if (valid && headers && schema.headers) {
+      schema.headers.$schema = $schema;
+      validate = ajv.compile(schema.headers);
+      valid = validate(headers);
+    }
+    if (valid && query && schema.query) {
+      schema.query.$schema = $schema;
+      validate = ajv.compile(schema.query);
+      valid = validate(query);
+    }
+
+    if (!valid) {
+      ctx.status = 200;
+      ctx.body = {
+        code: 442,
+        success: false,
+        message: `validate error:${ajv.errorsText(validate.errors)}`,
+      };
+      return;
+    }
+    await next();
+  };
+};
