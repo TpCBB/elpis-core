@@ -3,13 +3,13 @@ const path = require("path");
 const { sep } = path; // 路径分隔符, 在windows下是 \ 在mac下是 / 兼容斜杠
 const env = require("./env"); // 环境变量
 
-const middlewareLoader = require("./loader/middleware"); // 中间件
-const serviceLoader = require("./loader/service"); // 服务
-const routerLoader = require("./loader/router"); // 路由
-const controllerLoader = require("./loader/controller"); // 控制器
-const extendLoader = require("./loader/extend"); // 扩展
 const configLoader = require("./loader/config"); // 配置
+const extendLoader = require("./loader/extend"); // 扩展
+const serviceLoader = require("./loader/service"); // 服务
+const controllerLoader = require("./loader/controller"); // 控制器
 const routerSchemaLoader = require("./loader/router-schema"); // 路由Schema
+const middlewareLoader = require("./loader/middleware"); // 中间件
+const routerLoader = require("./loader/router"); // 路由
 
 module.exports = {
   /**
@@ -35,9 +35,13 @@ module.exports = {
     app.env = env();
     console.log(`-- [start] env: ${app.env.get()} --`);
 
-    // 加载中间件
-    middlewareLoader(app);
-    console.log(`-- [start] middlewareLoader done --`);
+    // 加载配置
+    configLoader(app);
+    console.log(`-- [start] configLoader done --`);
+
+    // 加载扩展
+    extendLoader(app);
+    console.log(`-- [start] extendLoader done --`);
 
     // 加载服务
     serviceLoader(app);
@@ -47,17 +51,14 @@ module.exports = {
     controllerLoader(app);
     console.log(`-- [start] controllerLoader done --`);
 
-    // 加载扩展
-    extendLoader(app);
-    console.log(`-- [start] extendLoader done --`);
-
-    // 加载配置
-    configLoader(app);
-    console.log(`-- [start] configLoader done --`);
-
     // 加载路由Schema
     routerSchemaLoader(app);
     console.log(`-- [start] routerSchemaLoader done --`);
+
+    // 加载中间件
+    middlewareLoader(app);
+    console.log(`-- [start] middlewareLoader done --`);
+
     // 加载全局中间件
     try {
       require(`${app.businessDir}${sep}middleware.js`)(app);
@@ -69,6 +70,9 @@ module.exports = {
 
     // 注册路由(加载路由之前要加载中间件)
     routerLoader(app);
+
+    app.use(app.middlewares.apiParamsVerify)
+    
     console.log(`-- [start] routerLoader done --`);
 
     // 启动服务

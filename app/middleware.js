@@ -32,6 +32,6 @@ module.exports = (app) => {
   // API 签名合法性校验
   app.use(app.middlewares.apiSignVerify);
 
-  // API 参数校验
-  app.use(app.middlewares.apiParamsVerify);
+  // API 参数校验 转移到 index.js router加载之后
+  // app.use(app.middlewares.apiParamsVerify);
 };
