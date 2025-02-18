@@ -8,7 +8,9 @@
     "beta": "set NODE_ENV='beta' && npx nodemon ./index.js",
     "prod": "set NODE_ENV='prod' && npx nodemon ./index.js",
     "lint": "eslint --quiet --ext js,vue .",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build:prod": "node ./app/webpack/prod.js",
+    "build:dev": "node --max_old_space_size=4096 ./app/webpack/dev.js"
   },
   "repository": {
     "type": "git",
@@ -72,6 +74,7 @@
     "mini-css-extract-plugin": "^2.7.6",
     "mocha": "^6.1.4",
     "nodemon": "^3.1.9",
+    "rimraf": "^5.0.10",
     "style-loader": "^0.14.1",
     "supertest": "^4.0.2",
     "terser-webpack-plugin": "^2.3.5",

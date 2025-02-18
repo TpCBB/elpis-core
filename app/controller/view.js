@@ -9,7 +9,7 @@ module.exports = (app) => {
      */
     async renderPage(ctx) {
       // 引入了中间件koa-nunjucks-2 会在app上挂载render方法
-      await ctx.render(`output/entry.${ctx.params.page}`, {
+      await ctx.render(`dist/entry.${ctx.params.page}`, {
         env: app.env.get(),
         options: JSON.stringify(app.options),
       });
