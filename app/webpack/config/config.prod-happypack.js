@@ -1,5 +1,6 @@
 const merge = require("webpack-merge");
 const path = require("path");
+const Happypack = require("happypack"); // 多线程打包
 const os = require("os");
 const webpackBaseConfig = require("./config.base");
 const SpeedMeasurePlugin = require("speed-measure-webpack-plugin");
@@ -11,19 +12,14 @@ const CssMinimizerPlugin = require("css-minimizer-webpack-plugin");
 const CleanWebpackPlugin = require("clean-webpack-plugin");
 const TerserPlugin = require("terser-webpack-plugin");
 const HtmlwebpackInjectAttributesPlugin = require("html-webpack-inject-attributes-plugin");
-const threadLoader = require("thread-loader");
-const threadLoaderConfig = {
-  poolTimeout: 2000, // 线程池空闲等待时间，2秒后自动退出
-  workerParallelJobs: 50, // 每个worker并行处理的任务数
-  workers: os.cpus().length, // worker数量，设置为CPU核心数
+
+// 多线程 build 设置
+const happypackCommonConfig = {
+  debug: false,
+  threadPool: Happypack.ThreadPool({
+    size: os.cpus().length,
+  }),
 };
-// 预热线程池
-threadLoader.warmup(
-  {
-    ...threadLoaderConfig,
-  },
-  ["babel-loader", "css-loader"]
-);
 
 // 生产环境配置
 let webpackProdConfig = merge.smart(webpackBaseConfig, {
@@ -55,12 +51,12 @@ let webpackProdConfig = merge.smart(webpackBaseConfig, {
     rules: [
       {
         test: /\.css$/,
-        use: [MiniCssExtractPlugin.loader, { loader: "thread-loader", options: threadLoaderConfig }, "css-loader"],
+        use: [MiniCssExtractPlugin.loader, "happypack/loader?id=css"],
       },
       {
         test: /\.js$/,
         include: [path.resolve(process.cwd(), "./app/pages")],
-        use: [{ loader: "thread-loader", options: threadLoaderConfig }, "babel-loader"],
+        use: ["happypack/loader?id=js"],
       },
     ],
   },
@@ -82,6 +78,30 @@ let webpackProdConfig = merge.smart(webpackBaseConfig, {
     // 提取css的公共部分, 有效利用缓存
     new MiniCssExtractPlugin({
       chunkFilename: "css/[name]_[contenthash:8].css",
+    }),
+    // 多线程打包 JS 加快打包速度
+    new Happypack({
+      ...happypackCommonConfig,
+      id: "js",
+      loaders: [
+        `babel-loader?${JSON.stringify({
+          presets: ["@babel/preset-env"],
+          plugins: ["@babel/plugin-transform-runtime"],
+        })}`,
+      ],
+    }),
+    // 多线程打包 css 加快打包速度
+    new Happypack({
+      ...happypackCommonConfig,
+      id: "css",
+      loaders: [
+        {
+          path: "css-loader",
+          options: {
+            importLoaders: 1,
+          },
+        },
+      ],
     }),
     // 浏览器在请求资源时不发送用户凭证
     new HtmlwebpackInjectAttributesPlugin({
