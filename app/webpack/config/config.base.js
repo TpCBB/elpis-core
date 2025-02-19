@@ -3,7 +3,6 @@ const HtmlWebpackPlugin = require("html-webpack-plugin");
 const path = require("path");
 const { VueLoaderPlugin } = require("vue-loader");
 const webpack = require("webpack");
-
 // 动态构造 将entry和htmlWebpackPlugin配置化
 const pageEntries = {};
 const htmlWebpackPluginList = [];
@@ -31,7 +30,7 @@ glob.sync(entryList).forEach((file) => {
  * webpack基础配置
  */
 
-module.exports = {
+const webpackBaseConfig = {
   // 入口配置  (多入口SSR配置)
   entry: pageEntries,
 
@@ -149,3 +148,6 @@ module.exports = {
     runtimeChunk: true,
   },
 };
+
+module.exports = webpackBaseConfig;
+

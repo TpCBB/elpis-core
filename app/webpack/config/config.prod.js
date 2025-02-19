@@ -3,7 +3,10 @@ const path = require("path");
 const Happypack = require("happypack"); // 多线程打包
 const os = require("os");
 const webpackBaseConfig = require("./config.base");
-
+const SpeedMeasurePlugin = require("speed-measure-webpack-plugin");
+const { VueLoaderPlugin } = require("vue-loader");
+const dotenv = require("dotenv");
+dotenv.config();
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const CssMinimizerPlugin = require("css-minimizer-webpack-plugin");
 const CleanWebpackPlugin = require("clean-webpack-plugin");
@@ -19,7 +22,7 @@ const happypackCommonConfig = {
 };
 
 // 生产环境配置
-const webpackProdConfig = merge.smart(webpackBaseConfig, {
+let webpackProdConfig = merge.smart(webpackBaseConfig, {
   // 指定生产环境
   mode: "production",
   // 生产环境的output
@@ -123,5 +126,18 @@ const webpackProdConfig = merge.smart(webpackBaseConfig, {
     ],
   },
 });
+
+// 如果SPEED_MEASURE_FLAG为true，则启用SpeedMeasurePlugin
+if (process.env.SPEED_MEASURE_FLAG) {
+  const smp = new SpeedMeasurePlugin();
+  // 删除VueLoaderPlugin 会与SpeedMeasurePlugin冲突
+  let vueLoaderPluginIndex = webpackProdConfig.plugins.find((plugin) => plugin instanceof VueLoaderPlugin);
+  if (vueLoaderPluginIndex) {
+    webpackProdConfig.plugins.splice(vueLoaderPluginIndex, 1);
+  }
+  webpackProdConfig = smp.wrap(webpackProdConfig);
+  // 添加VueLoaderPlugin
+  webpackProdConfig.plugins.push(new VueLoaderPlugin());
+}
 
 module.exports = webpackProdConfig;
