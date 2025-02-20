@@ -90,6 +90,7 @@ const webpackBaseConfig = {
       $common: path.resolve(process.cwd(), "./app/pages/common"),
       $store: path.resolve(process.cwd(), "./app/pages/store"),
       $widgets: path.resolve(process.cwd(), "./app/pages/widgets"),
+      $asserts: path.resolve(process.cwd(), "./app/pages/asserts"),
     },
   },
 
@@ -102,6 +103,8 @@ const webpackBaseConfig = {
     // 把第三方库 暴露到 window context下
     new webpack.ProvidePlugin({
       Vue: "vue",
+      axios: "axios",
+      _: "lodash",
     }),
     // 定义全局常量
     new webpack.DefinePlugin({

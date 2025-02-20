@@ -1,16 +1,24 @@
 <template>
     <h1>page1</h1>
-
-    <input v-model="content" type="text">
-
-    {{ content }}
+    <el-table :data="tableData">
+        <el-table-column label="姓名" prop="name" />
+        <el-table-column label="年龄" prop="age" />
+        <el-table-column label="地址" prop="address" />
+    </el-table>
 
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue';
+import curl from '$common/curl';
 import utils from '$common/utils'
-const content = ref('')
+const tableData = ref([])
+
+onMounted(() => {
+    curl({ url: '/api/project/getlist' }).then((res) => {
+        console.log(res)
+    })
+})
 
 console.log(utils)
 </script>

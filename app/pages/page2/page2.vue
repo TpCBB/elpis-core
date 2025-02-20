@@ -2,6 +2,7 @@
     <h1>page2</h1>
     <input v-model="content" type="text">
     {{ content }}
+    这里加东西热更新成功了!
 </template>
 
 <script setup>

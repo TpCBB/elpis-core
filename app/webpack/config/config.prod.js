@@ -130,7 +130,7 @@ let webpackProdConfig = merge.smart(webpackBaseConfig, {
 // 如果SPEED_MEASURE_FLAG为true，则启用SpeedMeasurePlugin
 if (process.env.SPEED_MEASURE_FLAG) {
   const smp = new SpeedMeasurePlugin();
-  // 删除VueLoaderPlugin 会与SpeedMeasurePlugin冲突
+  // 删除VueLoaderPlugin 会与SpeedMeasurePlugin冲突 与 MiniCssExtractPlugin 也冲突
   let vueLoaderPluginIndex = webpackProdConfig.plugins.find((plugin) => plugin instanceof VueLoaderPlugin);
   if (vueLoaderPluginIndex) {
     webpackProdConfig.plugins.splice(vueLoaderPluginIndex, 1);
