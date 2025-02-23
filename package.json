@@ -8,7 +8,7 @@
     "beta": "set NODE_ENV='beta' && npx nodemon ./index.js",
     "prod": "set NODE_ENV='prod' && npx nodemon ./index.js",
     "lint": "eslint --quiet --ext js,vue .",
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "set ENV='local' && mocha 'test/**/*.js'",
     "build:prod": "node ./app/webpack/prod.js",
     "build:dev": "node --max_old_space_size=4096 ./app/webpack/dev.js"
   },
