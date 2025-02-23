@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class='dark'>
   <head>
     <meta charset="utf-8" />
     <link rel="stylesheet" href="/static/normalize.css" />
@@ -7,7 +7,6 @@
     <title>{{ name }}</title>
   </head>
   <body style="color: red">
-    <h1>page1</h1>
     <input type="text" id="env" value="{{ env }}" style="display: none" />
     <input
       type="text"

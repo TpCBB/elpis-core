@@ -2,8 +2,9 @@ import { createApp } from "vue";
 
 // 引入element-ui
 import ElementPlus from "element-plus";
-import "element-plus/dist/index.css";
-
+import "element-plus/theme-chalk/index.css";
+import "element-plus/theme-chalk/dark/css-vars.css";
+import "$asserts/dark/css-vars.css";
 // 引入 custom.css
 import "$asserts/custom.css";
 
