@@ -3,3 +3,7 @@ package-lock.json
 eplis_record_md
 config.local.js
 logs
+app/public/dist
+.prettierrc
+.vscode
+todo.md

@@ -71,6 +71,7 @@ module.exports = {
     // 注册路由(加载路由之前要加载中间件)
     routerLoader(app);
 
+    // 注册参数校验中间件 需要再routerLoader之后 这样才能获取到 /:id 这种路由参数
     app.use(app.middlewares.apiParamsVerify)
     
     console.log(`-- [start] routerLoader done --`);
@@ -84,5 +85,7 @@ module.exports = {
     } catch (error) {
       console.error("启动服务失败", error);
     }
+
+    return app
   },
 };
