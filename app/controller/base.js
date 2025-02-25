@@ -5,9 +5,9 @@ module.exports = (app) =>
      * 统一收拢 controller 相关公共方法
      */
     constructor() {
-      this.app = app;
-      this.config = app.config;
-      this.controller = app.controller;
+      this.app = app
+      this.config = app.config
+      this.controller = app.controller
     }
     /**
      * 成功返回
@@ -16,12 +16,12 @@ module.exports = (app) =>
      * @param {object} metadata 额外信息
      */
     success(ctx, data = {}, metadata = {}) {
-      ctx.status = 200;
+      ctx.status = 200
       ctx.body = {
         success: true,
         data,
-        metadata,
-      };
+        metadata
+      }
     }
     /**
      * 失败返回
@@ -30,11 +30,12 @@ module.exports = (app) =>
      * @param {number} code 错误码
      */
     fail(ctx, message, code) {
-      ctx.status = code;
+      // http 状态码必须是一个有效的3位数字
+      ctx.status = 200
       ctx.body = {
         success: false,
         message,
-        code,
-      };
+        code
+      }
     }
-  };
+  }

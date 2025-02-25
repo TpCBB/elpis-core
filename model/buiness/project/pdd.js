@@ -22,6 +22,15 @@ module.exports = {
       }
     },
     {
+      key: 'search',
+      name: '信息查询',
+      moduleType: 'iframe',
+      menuType: 'module',
+      iframeConfig: {
+        path: ''
+      }
+    },
+    {
       key: 'data',
       name: '数据分析',
       menuType: 'module',
@@ -40,7 +49,8 @@ module.exports = {
           {
             key: 'sider-search',
             name: '信息查询',
-            menuType: 'iframe',
+            moduleType: 'iframe',
+            menuType: 'module',
             iframeConfig: {
               path: ''
             }

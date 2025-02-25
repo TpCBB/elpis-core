@@ -33,5 +33,6 @@ module.exports = (app) => {
   app.use(app.middlewares.apiSignVerify);
 
   // API 参数校验 转移到 index.js router加载之后
-  // app.use(app.middlewares.apiParamsVerify);
+  // 再次修改 放到routerLoader之后 会导致之前进来的参数没法校验 
+  app.use(app.middlewares.apiParamsVerify);
 };

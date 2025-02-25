@@ -80,6 +80,7 @@ module.exports = (app) => {
       }
       modelItem.project[projectKey] = require(path.resolve(file))
       modelItem.project[projectKey].key = projectKey // 注入项目key
+      modelItem.project[projectKey].modelKey = modelKey // 注入模型key
     }
     //  output->file D:/code/eplis/model/buiness/model.js 取  /model/buiness/model.js 中间夹住的
     if (type === 'model') {

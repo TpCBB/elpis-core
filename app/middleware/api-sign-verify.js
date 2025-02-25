@@ -12,10 +12,8 @@ module.exports = (app) => {
     const { headers } = ctx.request;
     const { s_t: st, s_sign: sSign } = headers;
     const { method, path } = ctx;
-
     const signKey = "qwertyuiop1234567890";
     const signature = md5(`${signKey}${st}`);
-
     app.logger.info(`${st}--${sSign}`);
     app.logger.info(`[${method}${path}] signature:${signature}`);
 
