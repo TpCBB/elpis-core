@@ -49,11 +49,36 @@ module.exports = {
           {
             key: 'sider-search',
             name: '信息查询',
-            moduleType: 'iframe',
             menuType: 'module',
+            moduleType: 'iframe',
             iframeConfig: {
               path: '/todo'
             }
+          },
+          {
+            key: 'category',
+            name: '分类数据',
+            menuType: 'group',
+            subMenu: [
+              {
+                key: 'category1',
+                name: '分类设置1',
+                menuType: 'module',
+                moduleType: 'iframe',
+                iframeConfig: {
+                  path: '/todo'
+                }
+              },
+              {
+                key: 'category2',
+                name: '分类设置2',
+                menuType: 'module',
+                moduleType: 'iframe',
+                iframeConfig: {
+                  path: '/todo'
+                }
+              }
+            ]
           }
         ]
       }

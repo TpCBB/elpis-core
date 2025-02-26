@@ -10,7 +10,7 @@
 <script setup>
 import zhCn from 'element-plus/es/locale/lang/zh-cn'
 import { useRoute, useRouter } from 'vue-router'
-import HeaderView from './complex-view/header-view/headerview.vue'
+import HeaderView from './complex-view/header-view/header-view.vue'
 import { ref, onMounted } from 'vue'
 import { useProjectStore } from '$store/project'
 import { useMenuStore } from '$store/menu'
@@ -79,4 +79,8 @@ onMounted(() => {
 })
 </script>
 
-<style lang="less" scoped></style>
+<style lang="less" scoped>
+:deep(.el-main) {
+  padding: 0;
+}
+</style>

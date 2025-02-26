@@ -1,5 +1,5 @@
 <template>
-  <HeaderContainer :title="'项目列表'">
+  <header-container :title="'项目列表'">
     <template #main-content>
       <div v-loading="loading">
         <div v-for="item in modelList" :key="item.model?.key">
@@ -31,12 +31,12 @@
         </div>
       </div>
     </template>
-  </HeaderContainer>
+  </header-container>
 </template>
 
 <script setup>
 import { ref, onMounted } from 'vue'
-import curl from '$common/curl'
+import $curl from '$common/curl'
 import HeaderContainer from '$widgets/header-container/header-container.vue'
 
 const loading = ref(false)
@@ -45,7 +45,7 @@ const modelList = ref([])
 // 获取项目列表
 async function getModelList() {
   loading.value = true
-  const res = await curl({ method: 'get', url: '/api/project/getModelList', errorMessage: '获取项目列表失败' })
+  const res = await $curl({ method: 'get', url: '/api/project/getModelList', errorMessage: '获取项目列表失败' })
   loading.value = false
 
   if (!res || !res.success || !res.data) {
