@@ -34,11 +34,11 @@ let webpackProdConfig = merge.smart(webpackBaseConfig, {
 
     // 打包文件的输出路径，使用path.join确保跨平台路径正确
     // process.cwd()获取当前工作目录，然后拼接后续路径
-    path: path.join(process.cwd(), "./app/public/dist/prod"),
+    path: path.join(process.cwd(), "./app/public/dist/prod/"),
 
     // 指定资源的公共访问路径
     // 这将作为生产环境下静态资源的基础URL
-    publicPath: "/dist/prod",
+    publicPath: "/dist/prod/",
 
     // 配置跨域资源加载策略
     // anonymous表示不发送凭据（cookies等）

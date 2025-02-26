@@ -1,7 +1,7 @@
 module.exports = {
   name: 'PDD',
   desc: 'pdd电商 系统',
-  homePage: '',
+  homePage: '/todo?proj_key=pdd&key=product',
   menu: [
     {
       key: 'product',
@@ -9,7 +9,7 @@ module.exports = {
       menuType: 'module',
       moduleType: 'custom',
       customConfig: {
-        path: ''
+        path: '/todo'
       }
     },
     {
@@ -18,7 +18,7 @@ module.exports = {
       menuType: 'module',
       moduleType: 'custom',
       customConfig: {
-        path: ''
+        path: '/todo'
       }
     },
     {
@@ -27,7 +27,7 @@ module.exports = {
       moduleType: 'iframe',
       menuType: 'module',
       iframeConfig: {
-        path: ''
+        path: '/todo'
       }
     },
     {
@@ -43,7 +43,7 @@ module.exports = {
             menuType: 'module',
             moduleType: 'custom',
             customConfig: {
-              path: ''
+              path: '/todo'
             }
           },
           {
@@ -52,7 +52,7 @@ module.exports = {
             moduleType: 'iframe',
             menuType: 'module',
             iframeConfig: {
-              path: ''
+              path: '/todo'
             }
           }
         ]

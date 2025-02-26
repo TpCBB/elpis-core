@@ -6,7 +6,7 @@
           <!-- 展示model -->
           <div class="model-panel">
             <el-row type="flex" align="middle">
-              <div class="title">{{ item.model?.name }}</div>
+              <div class="title"> {{ item.model?.name }} </div>
             </el-row>
             <div class="divider"></div>
           </div>
@@ -23,7 +23,7 @@
               </div>
               <template #footer>
                 <el-row justify="end">
-                  <el-button type="primary" link @click="onEnter(projItem.key)">进入项目</el-button>
+                  <el-button type="primary" link @click="onEnter(projItem)">进入项目</el-button>
                 </el-row>
               </template>
             </el-card>
@@ -55,14 +55,15 @@ async function getModelList() {
   modelList.value = res.data
 }
 
-// 进入项目
-function onEnter(key) {
-  console.log(key)
-}
-
 onMounted(() => {
   getModelList()
 })
+
+// 进入项目
+function onEnter(projItem) {
+  const { origin } = window.location
+  window.open(`${origin}/view/dashboard#${projItem.homePage}`)
+}
 </script>
 
 <style lang="less" scoped>

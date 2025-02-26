@@ -1,7 +1,7 @@
 module.exports = {
   name: 'B站课堂',
   desc: 'B站课堂管理系统',
-  homePage: '',
+  homePage: '/todo?proj_key=bilibili&key=video',
   menu: [
     {
         key:"video",
@@ -24,7 +24,7 @@ module.exports = {
             menutType: 'module',
             moduleType: 'custom',
             customConfig: {
-              path: ''
+              path: '/todo'
             }
           },
           {
@@ -33,7 +33,7 @@ module.exports = {
             menutType: 'module',
             moduleType: 'custom',
             customConfig: {
-              path: ''
+              path: '/todo'
             }
           },
           {
@@ -42,7 +42,7 @@ module.exports = {
             menutType: 'module',
             moduleType: 'custom',
             customConfig: {
-              path: ''
+              path: '/todo'
             }
           }
         ]
