@@ -1,17 +1,17 @@
-import { createApp } from "vue";
+import { createApp } from 'vue'
 
 // 引入element-ui
-import ElementPlus from "element-plus";
-import "element-plus/theme-chalk/index.css";
-import "element-plus/theme-chalk/dark/css-vars.css";
-import "$asserts/dark/css-vars.css";
+import ElementPlus from 'element-plus'
+import 'element-plus/theme-chalk/index.css'
+import 'element-plus/theme-chalk/dark/css-vars.css'
+import '$asserts/dark/css-vars.css'
 // 引入 custom.css
-import "$asserts/custom.css";
+import '$asserts/custom.css'
 
 // 引入 pinia
-import pinia from "$store";
+import pinia from '$store'
 
-import { createRouter, createWebHistory } from "vue-router";
+import { createRouter, createWebHashHistory } from 'vue-router'
 
 /**
  * vue 主入口, 用于创建vue实例, 并挂载到dom上
@@ -21,27 +21,27 @@ import { createRouter, createWebHistory } from "vue-router";
  */
 
 export default (pageComponent, { routes, libs }) => {
-  const app = createApp(pageComponent);
-  app.use(ElementPlus);
-  app.use(pinia);
+  const app = createApp(pageComponent)
+  app.use(ElementPlus)
+  app.use(pinia)
 
   // 根据 libs 引入不同的库
   if (libs && libs.length) {
     for (let i = 0; i < libs.length; ++i) {
-      app.use(libs[i]);
+      app.use(libs[i])
     }
   }
 
   if (routes && routes.length) {
     const router = createRouter({
-      history: createWebHistory(),
-      routes,
-    });
-    app.use(router);
+      history: createWebHashHistory(),
+      routes
+    })
+    app.use(router)
     router.isReady().then(() => {
-      app.mount("#root");
-    });
+      app.mount('#root')
+    })
   } else {
-    app.mount("#root");
+    app.mount('#root')
   }
-};
+}

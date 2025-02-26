@@ -2,7 +2,7 @@
 module.exports = {
   name: '抖音课堂',
   desc: '抖音课堂管理系统',
-  homePage: '',
+  homePage: '/todo?proj_key=douyin&key=video',
   menu: [
     {
       key: 'traffic',
@@ -16,7 +16,7 @@ module.exports = {
             name: '学员流量',
             mentType: 'module',
             customConfig: {
-                path:""
+                path:"/todo"
             }
           }
         ]

@@ -6,7 +6,7 @@
     <link rel="icon" href="/static/logo.png" type="image/x-icon" />
     <title>{{ name }}</title>
   </head>
-  <body style="color: red">
+  <body>
     <input type="text" id="env" value="{{ env }}" style="display: none" />
     <input
       type="text"

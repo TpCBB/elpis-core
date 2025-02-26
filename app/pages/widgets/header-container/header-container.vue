@@ -2,7 +2,7 @@
 <template>
   <el-container class="header-container">
     <el-header class="header">
-      <el-row type="flex" align="middle" class="header-row">
+      <el-row type="flex" align="middle" justify="space-between" class="header-row">
         <!-- 左上方 title -->
         <el-row type="flex" align="middle" class="title-panel">
           <img src="./asserts/logo.png" class="logo" />
@@ -56,8 +56,9 @@ const handleUserCommand = (event) => {
     border-bottom: 1px solid #e8e8e8;
 
     .header-row {
+      color: #fff;
       height: 60px;
-      padding: 20px;
+      padding: 0 20px;
 
       .title-panel {
         width: 180px;
@@ -73,11 +74,9 @@ const handleUserCommand = (event) => {
         .text {
           font-size: 15px;
           font-weight: 500;
-          
         }
       }
       .setting-panel {
-        margin-left: auto;
         min-width: 180px;
         .avatar {
           margin-right: 12px;
