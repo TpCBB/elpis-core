@@ -1,16 +1,40 @@
 # Eplis
 
+一个基于 Vue 3 + Koa2 的全栈项目。
+
+## 技术栈
+
+- 前端: Vue 3 + Vue Router + Pinia + Element Plus
+- 后端: Koa2
+- 数据库: MySQL
+- 构建工具: Webpack 5
+
+## 开始使用
+
+### 安装依赖
+
+```bash
+npm install
+```
+
+### 启动BFF服务
+
+```bash
+npm run dev
+```
+
+### 启动前端服务
+
+```bash
+npm run build:dev
+```
+
+### 环境要求
+
+- Node.js (建议 v14 或更高版本)
+- MySQL
+
 ## 开发者信条
 
 > Don't complain it, change it.  
 > 不要抱怨它，去改变它。
-
-## git commit keyword
-
-- feat: 新功能(feature)
-- fix: 修补bug
-- docs: 文档(documentation)
-- style: 格式(不影响代码运行的变动)
-- refactor: 重构(既不是新增功能,也不是修改bug的代码变动)
-- test: 增加测试
-- chore: 构建过程或辅助工具的变动

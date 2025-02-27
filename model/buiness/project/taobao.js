@@ -1,7 +1,7 @@
 module.exports = {
   name: '淘宝',
   desc: '淘宝电商系统',
-  homePage: '',
+  homePage: '/todo?proj_key=taobao&key=product',
   menu: [
     {
       key: 'product',
@@ -24,6 +24,7 @@ module.exports = {
       key: 'operating',
       name: '运营活动',
       menuType: 'sider',
+      moduleType: 'sider',
       siderConfig: {
         menu: [
           {
@@ -32,7 +33,7 @@ module.exports = {
             menuType: 'module',
             moduleType: 'custom',
             customConfig: {
-              path: ''
+              path: '/todo'
             }
           },
           {
@@ -41,7 +42,7 @@ module.exports = {
             menuType: 'module',
             moduleType: 'custom',
             customConfig: {
-              path: ''
+              path: '/todo'
             }
           },
           {
@@ -50,7 +51,7 @@ module.exports = {
             menuType: 'module',
             moduleType: 'custom',
             customConfig: {
-              path: ''
+              path: '/todo'
             }
           }
         ]

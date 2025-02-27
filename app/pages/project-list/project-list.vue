@@ -1,12 +1,12 @@
 <template>
-  <HeaderContainer :title="'项目列表'">
+  <header-container :title="'项目列表'">
     <template #main-content>
       <div v-loading="loading">
         <div v-for="item in modelList" :key="item.model?.key">
           <!-- 展示model -->
           <div class="model-panel">
             <el-row type="flex" align="middle">
-              <div class="title">{{ item.model?.name }}</div>
+              <div class="title"> {{ item.model?.name }} </div>
             </el-row>
             <div class="divider"></div>
           </div>
@@ -23,7 +23,7 @@
               </div>
               <template #footer>
                 <el-row justify="end">
-                  <el-button type="primary" link @click="onEnter(projItem.key)">进入项目</el-button>
+                  <el-button type="primary" link @click="onEnter(projItem)">进入项目</el-button>
                 </el-row>
               </template>
             </el-card>
@@ -31,12 +31,12 @@
         </div>
       </div>
     </template>
-  </HeaderContainer>
+  </header-container>
 </template>
 
 <script setup>
 import { ref, onMounted } from 'vue'
-import curl from '$common/curl'
+import $curl from '$common/curl'
 import HeaderContainer from '$widgets/header-container/header-container.vue'
 
 const loading = ref(false)
@@ -45,7 +45,7 @@ const modelList = ref([])
 // 获取项目列表
 async function getModelList() {
   loading.value = true
-  const res = await curl({ method: 'get', url: '/api/project/getModelList', errorMessage: '获取项目列表失败' })
+  const res = await $curl({ method: 'get', url: '/api/project/getModelList', errorMessage: '获取项目列表失败' })
   loading.value = false
 
   if (!res || !res.success || !res.data) {
@@ -55,14 +55,15 @@ async function getModelList() {
   modelList.value = res.data
 }
 
-// 进入项目
-function onEnter(key) {
-  console.log(key)
-}
-
 onMounted(() => {
   getModelList()
 })
+
+// 进入项目
+function onEnter(projItem) {
+  const { origin } = window.location
+  window.open(`${origin}/view/dashboard#${projItem.homePage}`)
+}
 </script>
 
 <style lang="less" scoped>

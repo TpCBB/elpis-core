@@ -3,5 +3,6 @@ const ElpisCore = require("./elpis-core");
 
 // 启动服务
 ElpisCore.start({
-    name:"tpc"
+    name:"tpc",
+    homePage:'/view/project-list'
 });

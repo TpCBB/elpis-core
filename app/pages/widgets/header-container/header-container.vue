@@ -22,11 +22,11 @@
           </el-dropdown>
         </el-row>
       </el-row>
-      <el-main class="main-container">
-        <!-- 核心内容-->
-        <slot name="main-content" />
-      </el-main>
     </el-header>
+    <el-main class="main-container">
+      <!-- 核心内容-->
+      <slot name="main-content" />
+    </el-main>
   </el-container>
 </template>
 
@@ -56,8 +56,9 @@ const handleUserCommand = (event) => {
     border-bottom: 1px solid #e8e8e8;
 
     .header-row {
+      color: #fff;
       height: 60px;
-      padding: 20px;
+      padding: 0 20px;
 
       .title-panel {
         width: 180px;
@@ -73,7 +74,6 @@ const handleUserCommand = (event) => {
         .text {
           font-size: 15px;
           font-weight: 500;
-          
         }
       }
       .setting-panel {

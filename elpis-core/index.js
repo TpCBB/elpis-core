@@ -71,8 +71,8 @@ module.exports = {
     // 注册路由(加载路由之前要加载中间件)
     routerLoader(app);
 
-    // 注册参数校验中间件 需要再routerLoader之后 这样才能获取到 /:id 这种路由参数
-    app.use(app.middlewares.apiParamsVerify)
+    // 注册参数校验中间件 需要再routerLoader之后 这样才能获取到 /:id 这种路由参数 // 再次修改 在需要校验/:id的地方单独校验中间件 避免不必要的性能开销
+    // app.use(app.middlewares.apiParamsVerify)
     
     console.log(`-- [start] routerLoader done --`);
 
