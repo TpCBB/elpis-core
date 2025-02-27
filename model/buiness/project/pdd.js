@@ -52,7 +52,7 @@ module.exports = {
             menuType: 'module',
             moduleType: 'iframe',
             iframeConfig: {
-              path: '/todo'
+              path: 'https://www.baidu.com'
             }
           },
           {
