@@ -1,7 +1,7 @@
 module.exports = {
   name: 'PDD',
   desc: 'pdd电商 系统',
-  homePage: '/todo?proj_key=pdd&key=product',
+  homePage: '/schema?proj_key=pdd&key=product',
   menu: [
     {
       key: 'product',
