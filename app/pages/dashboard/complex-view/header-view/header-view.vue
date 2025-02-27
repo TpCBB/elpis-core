@@ -1,10 +1,10 @@
 <template>
-  <headerContainer :title="projectName">
+  <header-container :title="projectName">
     <template #menu-content>
       <!-- 根据 menuStore.menuList 渲染 -->
       <el-menu :default-active="activeKey" mode="horizontal" @select="onMenuSelect" :ellipsis="false">
         <template v-for="item in menuStore.menuList">
-          <subMenu v-if="item.subMenu && item.subMenu.length > 0" :menuItem="item"></subMenu>
+          <sub-menu v-if="item.subMenu && item.subMenu.length > 0" :menuItem="item"></sub-menu>
           <el-menu-item v-else :index="item.key" :key="item.key">{{ item.name }}</el-menu-item>
         </template>
       </el-menu>
@@ -33,14 +33,14 @@
     <template #main-content>
       <slot name="main-content"></slot>
     </template>
-  </headerContainer>
+  </header-container>
 </template>
 
 <script setup>
-import headerContainer from '$widgets/header-container/header-container.vue'
+import HeaderContainer from '$widgets/header-container/header-container.vue'
 import { ArrowDown } from '@element-plus/icons-vue'
 import { useRoute } from 'vue-router'
-import subMenu from './complex-view/sub-menu/sub-menu.vue'
+import SubMenu from './complex-view/sub-menu/sub-menu.vue'
 import { useProjectStore } from '$store/project'
 import { useMenuStore } from '$store/menu'
 import { ref, watch, onMounted } from 'vue'

@@ -2,7 +2,7 @@
 <template>
   <el-container class="header-container">
     <el-header class="header">
-      <el-row type="flex" align="middle" justify="space-between" class="header-row">
+      <el-row type="flex" align="middle" class="header-row">
         <!-- 左上方 title -->
         <el-row type="flex" align="middle" class="title-panel">
           <img src="./asserts/logo.png" class="logo" />
@@ -22,11 +22,11 @@
           </el-dropdown>
         </el-row>
       </el-row>
-      <el-main class="main-container">
-        <!-- 核心内容-->
-        <slot name="main-content" />
-      </el-main>
     </el-header>
+    <el-main class="main-container">
+      <!-- 核心内容-->
+      <slot name="main-content" />
+    </el-main>
   </el-container>
 </template>
 
@@ -77,6 +77,7 @@ const handleUserCommand = (event) => {
         }
       }
       .setting-panel {
+        margin-left: auto;
         min-width: 180px;
         .avatar {
           margin-right: 12px;
