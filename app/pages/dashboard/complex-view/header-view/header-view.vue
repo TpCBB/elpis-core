@@ -56,17 +56,11 @@ const emit = defineEmits(['projectCommand', 'menuSelect'])
 const activeKey = ref('')
 
 watch(
-  () => route.query.key,
+  [() => route.query.key, () => menuStore.menuList],
   () => {
     setActive()
-  }
-)
-
-watch(
-  () => menuStore.menuList,
-  () => {
-    setActive()
-  }
+  },
+  { deep: true }
 )
 
 onMounted(() => {

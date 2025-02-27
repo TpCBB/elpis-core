@@ -65,19 +65,12 @@ const setActiveKey = (key) => {
 }
 
 watch(
-  () => route.query.key,
+  [() => route.query.key, () => menuStore.menuList],
   () => {
     setMenuList()
     setActiveKey()
-  }
-)
-
-watch(
-  () => menuStore.menuList,
-  () => {
-    setMenuList()
-    setActiveKey()
-  }
+  },
+  { deep: true }
 )
 
 const onMenuSelect = (menuKey) => {
