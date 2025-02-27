@@ -16,9 +16,10 @@ module.exports = {
       key: 'client',
       name: '客户管理(pdd)',
       menuType: 'module',
-      moduleType: 'custom',
-      customConfig: {
-        path: '/todo'
+      moduleType: 'schema',
+      schemaConfig: {
+        api: '/api/client',
+        schema: {}
       }
     },
     {
@@ -73,9 +74,10 @@ module.exports = {
                 key: 'category2',
                 name: '分类设置2',
                 menuType: 'module',
-                moduleType: 'iframe',
-                iframeConfig: {
-                  path: '/todo'
+                moduleType: 'schema',
+                schemaConfig: {
+                  api: '/api/client',
+                  schema: {}
                 }
               }
             ]
