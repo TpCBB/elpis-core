@@ -1,4 +1,8 @@
 const path = require("path");
+/**
+ * 加载所有中间件
+ * @param {*} app 
+ */
 module.exports = (app) => {
   // 静态资源路径 在app/public/static下
   const KoaStatic = require("koa-static");
@@ -35,4 +39,7 @@ module.exports = (app) => {
   // API 参数校验 转移到 index.js router加载之后
   // 再次修改 放到routerLoader之后 会导致之前进来的参数没法校验 
   app.use(app.middlewares.apiParamsVerify);
+
+  // 处理项目相关内容
+  app.use(app.middlewares.projectHandler);
 };

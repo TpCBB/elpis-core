@@ -2,10 +2,10 @@
   <header-container :title="projectName">
     <template #menu-content>
       <!-- 根据 menuStore.menuList 渲染 -->
-      <el-menu :default-active="activeKey" mode="horizontal" @select="onMenuSelect" :ellipsis="false">
+      <el-menu :default-active="activeKey" mode="horizontal" :ellipsis="false" @select="onMenuSelect">
         <template v-for="item in menuStore.menuList">
-          <sub-menu v-if="item.subMenu && item.subMenu.length > 0" :menuItem="item"></sub-menu>
-          <el-menu-item v-else :index="item.key" :key="item.key">{{ item.name }}</el-menu-item>
+          <sub-menu v-if="item.subMenu && item.subMenu.length > 0" :key="item.key" :menu-item="item"></sub-menu>
+          <el-menu-item v-else :key="item" :index="item.key" >{{ item.name }}</el-menu-item>
         </template>
       </el-menu>
     </template>
@@ -76,7 +76,6 @@ const setActive = function () {
 }
 
 const onMenuSelect = (menuKey) => {
-  console.log(`output->menuKey`,menuKey)
   const menuItem = menuStore.findMenuItem({
     key: 'key',
     value: menuKey
@@ -89,9 +88,9 @@ const handleProjectCommand = (event) => {
   if (!projItem || !projItem.homePage) {
     return
   }
-  const { origin, pathname } = window.location
-  window.location.replace(`${origin}${pathname}#${projItem.homePage}`)
-  window.location.reload()
+
+  const { origin } = window.location
+  window.location.replace(`${origin}/view/dashboard${projItem.homePage}`)
 }
 </script>
 

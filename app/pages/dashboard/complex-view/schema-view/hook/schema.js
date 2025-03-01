@@ -31,7 +31,6 @@ export const useSchema = function () {
       nextTick(() => {
         tableSchema.value = buidlDtoSchema(configSchema, 'table')
         tableConfig.value = sConfig.schema?.tableConfig
-        console.log(`output->`, tableConfig.value)
       })
     }
   }

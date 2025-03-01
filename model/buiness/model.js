@@ -8,7 +8,7 @@ module.exports = {
       menuType: 'module',
       moduleType: 'schema',
       schemaConfig: {
-        api: '/api/product',
+        api: '/api/proj/product',
         schema: {
           type: 'object',
           properties: {
@@ -65,7 +65,7 @@ module.exports = {
               {
                 label: '删除',
                 type: 'danger',
-                eventKey: 'Delete',
+                eventKey: 'remove',
                 eventOption: {
                   params: {
                     product_id: 'schema::product_id'

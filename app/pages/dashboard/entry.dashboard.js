@@ -5,16 +5,16 @@ const routes = []
 const libs = []
 // 头部菜单路由
 routes.push({
-  path: '/iframe',
+  path: '/view/dashboard/iframe',
   component: () => import('$pages/dashboard/complex-view/iframe-view/iframe-view.vue')
 })
 routes.push({
-  path: '/schema',
+  path: '/view/dashboard/schema',
   component: () => import('$pages/dashboard/complex-view/schema-view/schema-view.vue')
 })
 // custom 自定义路由
 routes.push({
-  path: '/todo',
+  path: '/view/dashboard/todo',
   component: () => import('$pages/dashboard/todo/todo.vue')
 })
 // 侧边栏菜单路由
@@ -23,20 +23,20 @@ routes.push({
 // 绝对路径 ：  /sider/iframe
 // 相对路径 ：  iframe
 routes.push({
-  path: '/sider',
+  path: '/view/dashboard/sider',
   component: () => import('$pages/dashboard/complex-view/sider-view/sider-view.vue'),
   children: [
     {
-      path: '/sider/iframe',
+      path: 'iframe',
       component: () => import('$pages/dashboard/complex-view/iframe-view/iframe-view.vue')
     },
     {
-      path: '/sider/schema',
+      path: 'schema',
       component: () => import('$pages/dashboard/complex-view/schema-view/schema-view.vue')
     },
     // custom 自定义路由
     {
-      path: '/sider/todo',
+      path: 'todo',
       component: () => import('$pages/dashboard/todo/todo.vue')
     }
   ]
@@ -44,7 +44,7 @@ routes.push({
 
 // 侧边栏兜底策略
 routes.push({
-  path: '/sider/:chapters+',
+  path: '/view/dashboard/sider/:chapters+',
   component: () => import('$pages/dashboard/complex-view/sider-view/sider-view.vue')
 })
 

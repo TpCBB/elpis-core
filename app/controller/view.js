@@ -9,10 +9,14 @@ module.exports = (app) => {
      */
     async renderPage(ctx) {
       // 引入了中间件koa-nunjucks-2 会在app上挂载render方法
+      app.logger.info(`[viewcontroller] query:${JSON.stringify(ctx.request.query)}`)
+      app.logger.info(`[viewcontroller] params:${JSON.stringify(ctx.request.params)}`)
+      const { proj_key: projKey } = ctx.request.query
       await ctx.render(`dist/entry.${ctx.params.page}`, {
+        projKey,
         env: app.env.get(),
-        options: JSON.stringify(app.options),
-      });
+        options: JSON.stringify(app.options)
+      })
     }
-  };
-};
+  }
+}

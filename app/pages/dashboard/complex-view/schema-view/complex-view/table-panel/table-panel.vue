@@ -38,7 +38,7 @@ const schemaTableRef = ref(null)
 const EventKeys = {
   remove: removeData
 }
-const handleOperation = (btnConfig, rowData) => {
+const handleOperation = ({ btnConfig, rowData }) => {
   const { eventKey } = btnConfig
   if (EventKeys[eventKey]) {
     EventKeys[eventKey]({ btnConfig, rowData })
@@ -69,11 +69,11 @@ function removeData({ btnConfig, rowData }) {
     type: 'warning'
   }).then(async () => {
     schemaTableRef.value.showLoading()
-    await $curl({
+    const res = await $curl({
       method: 'delete',
       url: api.value,
       data: {
-        [removeKey]: removeValue
+        [rowValueKey]: removeValue
       },
       errorMessage: '删除失败'
     })
@@ -90,20 +90,18 @@ function removeData({ btnConfig, rowData }) {
     })
     await initTableData()
   })
-
-  const initTableData = async () => {
-    await schemaTableRef.value.initTableData()
-  }
-
-  const loadTableData = async () => {
-    await schemaTableRef.value.loadTableData()
-  }
-
-  defineExpose({
-    initTableData,
-    loadTableData
-  })
 }
+const initTableData = async () => {
+  await schemaTableRef.value.initTableData()
+}
+
+const loadTableData = async () => {
+  await schemaTableRef.value.loadTableData()
+}
+defineExpose({
+  initTableData,
+  loadTableData
+})
 </script>
 
 <style lang="less" scoped>

@@ -13,7 +13,7 @@
           v-if="schemaItem.option.visiable !== false"
           :key="key"
           :label="schemaItem.label"
-          :prop="schemaItem.key"
+          :prop="key"
           :width="schemaItem.option.width"
           v-bind="schemaItem.option"
         ></el-table-column>
@@ -23,10 +23,11 @@
         <template #default="scope">
           <el-button
             v-for="item in buttons"
+            :key="item.label"
             link
             v-bind="item"
             @click="operationHandler({ btnConfig: item, rowData: scope.row })"
-          ></el-button>
+          >{{ item.label }}</el-button>
         </template>
       </el-table-column>
     </el-table>
