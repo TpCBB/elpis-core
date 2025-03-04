@@ -46,12 +46,23 @@ const docs = {
                 ...elTableColumnConfig, // 标准的 el-table-column 配置
                 visiable: true // 是否显示
               },
-              // 字段在search中的配置
-              searchOption: {},
+              // 字段在search-bar中的配置
+              searchOption: {
+                ...eleComponentConfig, // 标准的 el-component 配置
+                comType: '', // 配置组件类型
+                default: '', // 默认值
+
+                // 如果 comType 为 select, 需要配置以下属性
+                enumList: [
+                  {
+                    label: value
+                  }
+                ]
+              },
               // 字段在form中的配置
               formOption: {}
             },
-            ...otherKeys
+            ...other
           }
         },
         // table 相关配置
@@ -71,7 +82,7 @@ const docs = {
               eventKey: '', // 按钮事件名
               eventOption: {
                 // 当 eventKey 为 'edit' 时, 需要配置以下属性
-                params:{
+                params: {
                   // 以下为请求参数
                   /**
                    * eg.  request({
@@ -86,7 +97,6 @@ const docs = {
                   // rowValueKey = 参数值, 格式为 schema::tableKey 到 table 中找到相应的字段
                   paramKey: rowValueKey
                 }
-
               }, // 按钮配置
               ...elButtonConfig // 标准的 el-button 配置
             },

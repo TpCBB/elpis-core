@@ -89,8 +89,8 @@ const handleProjectCommand = (event) => {
     return
   }
 
-  const { origin } = window.location
-  window.location.replace(`${origin}/view/dashboard${projItem.homePage}`)
+  const { host } = window.location
+  window.location.replace(`http://${host}/view/dashboard${projItem.homePage}`)
 }
 </script>
 

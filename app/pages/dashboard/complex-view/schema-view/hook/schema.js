@@ -10,6 +10,8 @@ export const useSchema = function () {
   const api = ref('')
   const tableSchema = ref({})
   const tableConfig = ref({})
+  const searchSchema = ref({})
+  const searchConfig = ref({})
 
   //   构造 SchemaConfig 相关配置, 输送给 schemaView 解析
   const buildData = function () {
@@ -27,10 +29,25 @@ export const useSchema = function () {
 
       tableSchema.value = {}
       tableConfig.value = undefined
+      searchSchema.value = {}
+      searchConfig.value = undefined
 
       nextTick(() => {
+        // 构造 tableSchema 和tableConfig
         tableSchema.value = buidlDtoSchema(configSchema, 'table')
         tableConfig.value = sConfig.schema?.tableConfig
+
+        // 构造 searchSchema 和 searchConfig
+        const dtoSchema = buidlDtoSchema(configSchema, 'search')
+        // 如果页面跳转的时候 路由带有值 则将值设置为默认值
+        for (const key in dtoSchema.properties) {
+          if (route.query[key] !== undefined) {
+            dtoSchema.properties[key].option.default = route.query[key]
+          }
+        }
+
+        searchSchema.value = dtoSchema
+        searchConfig.value = sConfig.schema?.searchConfig
       })
     }
   }
@@ -49,7 +66,6 @@ export const useSchema = function () {
     for (let key in _schema.properties) {
       const props = _schema.properties[key]
 
-      //   代码1
       if (props[`${type}Option`]) {
         let dtoProps = {}
         // 提取 props 中 除了 Option 的有效配置
@@ -81,6 +97,8 @@ export const useSchema = function () {
   return {
     api,
     tableSchema,
-    tableConfig
+    tableConfig,
+    searchSchema,
+    searchConfig
   }
 }

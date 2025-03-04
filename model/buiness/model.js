@@ -18,6 +18,9 @@ module.exports = {
               tableOption: {
                 width: 300,
                 'show-overflow-tooltip': true
+              },
+              searchOption: {
+                comType: 'input'
               }
             },
             product_name: {
@@ -25,6 +28,11 @@ module.exports = {
               label: '商品名称',
               tableOption: {
                 width: 200
+              },
+              searchOption: {
+                comType: 'dynamicSelect',
+                clearable: 'clearable',
+                api: '/api/proj/product_enum/list'
               }
             },
             product_price: {
@@ -32,6 +40,28 @@ module.exports = {
               label: '商品价格',
               tableOption: {
                 width: 200
+              },
+              searchOption: {
+                comType: 'select',
+                clearable: 'clearable',
+                enumList: [
+                  {
+                    label: '全部',
+                    value: '-1'
+                  },
+                  {
+                    label: '100',
+                    value: 100
+                  },
+                  {
+                    label: '200',
+                    value: 200
+                  },
+                  {
+                    label: '300',
+                    value: 300
+                  }
+                ]
               }
             },
             product_stock: {
@@ -44,7 +74,11 @@ module.exports = {
             product_create_time: {
               type: 'string',
               label: '创建时间',
-              tableOption: {}
+              tableOption: {},
+              searchOption: {
+                comType: 'dateRange',
+                defaultValue: undefined
+              }
             }
           },
           tableConfig: {

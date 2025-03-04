@@ -27,7 +27,9 @@
             link
             v-bind="item"
             @click="operationHandler({ btnConfig: item, rowData: scope.row })"
-          >{{ item.label }}</el-button>
+          >
+            {{ item.label }}
+          </el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -81,6 +83,13 @@ const props = defineProps({
     default: ''
   },
   /**
+   * api 请求参数, 请求api时候携带
+   */
+  apiParams: {
+    type: Object,
+    default: () => ({})
+  },
+  /**
    * 表格按钮
    * 遵循 dashboard-module 的 tableConfig 配置
    * [
@@ -99,7 +108,7 @@ const props = defineProps({
   }
 })
 const emit = defineEmits(['operation'])
-const { schema, api, buttons } = toRefs(props)
+const { schema, api, apiParams, buttons } = toRefs(props)
 // 根据按钮数量计算操作列宽度
 const operationWidth = computed(() => {
   return buttons?.value?.length > 0
@@ -120,7 +129,7 @@ onMounted(() => {
 })
 
 watch(
-  [schema, api],
+  [schema, api, apiParams],
   () => {
     initTableData()
   },
@@ -155,6 +164,7 @@ const fetchTableData = async () => {
     method: 'get',
     url: `${api.value}/list`,
     query: {
+      ...apiParams.value,
       page: currentPage.value,
       pageSize: pageSize.value
     }
