@@ -10,7 +10,7 @@
       <template v-for="(schemaItem, key) in schema.properties">
         <!-- v-bind="schemaItem.option" 可以处理 el-table-column 的配置 -->
         <el-table-column
-          v-if="schemaItem.option.visiable !== false"
+          v-if="schemaItem.option.visible !== false"
           :key="key"
           :label="schemaItem.label"
           :prop="key"
@@ -65,7 +65,7 @@ const props = defineProps({
             // 字段在table中的配置
             option: {
               ...elTableColumnConfig, // 标准的 el-table-column 配置
-              visiable: true // 是否显示
+              visible: true // 是否显示
             },
           }
         }
@@ -137,7 +137,7 @@ watch(
 )
 // 避免频繁触发 fetchTableData
 let timer = null
-const loadTableData = async (time = 100) => {
+const loadTableData = async (time = 500) => {
   clearTimeout(timer)
   timer = setTimeout(async () => {
     await fetchTableData()
@@ -158,7 +158,6 @@ const fetchTableData = async () => {
   if (!api.value) return
 
   showLoading()
-
   // 请求 table 数据
   const res = await $curl({
     method: 'get',

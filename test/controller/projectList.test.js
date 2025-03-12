@@ -187,4 +187,18 @@ describe('project controller', function () {
     assert(resBody.code === 50000)
     assert(resBody.message.indexOf('获取项目异常') > -1)
   })
+
+  // /api/proj/product
+  it('GET /api/proj/product', async () => {
+    const tmpRequest = request.get('/api/proj/product')
+    tmpRequest.set('s_t', st)
+    tmpRequest.set('s_sign', md5(`${signKey}${st}`))
+    tmpRequest.set('proj_key', 'jd')
+    tmpRequest.query({ product_id: 1 })
+    const res = await tmpRequest
+    console.log('output=--->',res.body);
+    assert(res.body.success === true)
+    
+    
+  })
 })

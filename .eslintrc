@@ -49,7 +49,8 @@
       "vue/max-attributes-per-line": "off",
       "vue/valid-template-root": "off",
       "vue/singleline-html-element-content-newline": "off",
-      "vue/html-self-closing": "off"
+      "vue/html-self-closing": "off",
+      "eslint-plugin-vue": "off"
     },
     "globals": {
       "$": true,

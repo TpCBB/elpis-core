@@ -28,7 +28,7 @@ const getValue = () => {
 }
 
 const reset = () => {
-  dtoValue.value = schema?.option?.defaultValue
+  dtoValue.value = schema?.option?.defaultValue || ''
 }
 
 onMounted(() => {
