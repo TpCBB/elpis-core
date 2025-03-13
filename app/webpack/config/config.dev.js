@@ -15,7 +15,7 @@ const DEV_SERVER_CONFIG = {
 // 开发阶段 entry 配置需要加入 hmr
 Object.keys(webpackBaseConfig.entry).forEach((key) => {
   webpackBaseConfig.entry[key] = [
-    `webpack-hot-middleware/client?path=http://${DEV_SERVER_CONFIG.HOST}:${DEV_SERVER_CONFIG.PORT}/${DEV_SERVER_CONFIG.HMR_PATH}?timeout=${DEV_SERVER_CONFIG.TIMEOUT}&reload=true}`,
+   `${require.resolve('webpack-hot-middleware/client')}?path=http://${DEV_SERVER_CONFIG.HOST}:${DEV_SERVER_CONFIG.PORT}/${DEV_SERVER_CONFIG.HMR_PATH}?timeout=${DEV_SERVER_CONFIG.TIMEOUT}&reload=true}`,
   ].concat(webpackBaseConfig.entry[key]);
 });
 
