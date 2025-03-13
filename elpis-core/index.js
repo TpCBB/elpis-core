@@ -59,14 +59,20 @@ module.exports = {
     middlewareLoader(app);
     console.log(`-- [start] middlewareLoader done --`);
 
-    // 加载全局中间件
+    // 加载 elpis 全局中间件
+    const elpisMiddleware = require(path.resolve(__dirname, `..${sep}app${sep}middleware.js`))
+    elpisMiddleware(app)
+    console.log(`-- [start] load elpis global middleware done`);
+
+    // 加载 业务 中的全局中间件
     try {
       require(`${app.businessDir}${sep}middleware.js`)(app);
-      console.log(`-- [start] load global middleware done`);
+      console.log(`-- [start] load business global middleware done`);
     } catch (error) {
       console.log(`output->error`, error);
-      console.log(`[execption] global middleware.js not found`);
+      console.log(`[execption] business global middleware.js not found`);
     }
+ 
 
     // 注册路由(加载路由之前要加载中间件)
     routerLoader(app);

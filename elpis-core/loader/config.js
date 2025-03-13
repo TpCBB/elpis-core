@@ -1,5 +1,5 @@
-const path = require("path");
-const { sep } = require("path");
+const path = require('path')
+const { sep } = require('path')
 
 /**
  * config loader
@@ -19,32 +19,39 @@ const { sep } = require("path");
  */
 
 module.exports = (app) => {
-  // 获取 config 目录
-  const configPath = path.resolve(app.baseDir, `.${sep}config`);
   // 获取 default.config
-  let defaultConfig = {};
+  let defaultConfig = {}
+  // 获取 default.config
+
+  // 获取 核心中 config 目录
+  const ElpisConfigPath = path.resolve(__dirname, `..${sep}..${sep}config`)
+  defaultConfig = require(path.resolve(ElpisConfigPath, `.${sep}config.default.js`))
+
+  // 获取 业务中 config 目录
+  const BussinessConfigPath = path.resolve(process.cwd(), `.${sep}config`)
+
   try {
-    defaultConfig = require(path.resolve(
-      configPath,
-      `.${sep}config.default.js`
-    ));
+    defaultConfig = {
+      ...defaultConfig,
+      ...require(path.resolve(BussinessConfigPath, `.${sep}config.default.js`))
+    }
   } catch (error) {
-    console.log(`[exception] config.default.js not found`);
+    console.log(`[exception] config.default.js not found`)
   }
 
   // 根据环境 获取 env.config
-  let envConfig = {};
+  let envConfig = {}
   try {
     if (app.env.isLocal()) {
-      envConfig = require(path.resolve(configPath, `.${sep}config.local.js`));
+      envConfig = require(path.resolve(BussinessConfigPath, `.${sep}config.local.js`))
     } else if (app.env.isBeta()) {
-      envConfig = require(path.resolve(configPath, `.${sep}config.beta.js`));
+      envConfig = require(path.resolve(BussinessConfigPath, `.${sep}config.beta.js`))
     } else if (app.env.isProd()) {
-      envConfig = require(path.resolve(configPath, `.${sep}config.prod.js`));
+      envConfig = require(path.resolve(BussinessConfigPath, `.${sep}config.prod.js`))
     }
   } catch (error) {
-    console.log(`[exception] config.${app.env.get()}.js not found`);
+    console.log(`[exception] config.${app.env.get()}.js not found`)
   }
   // 合并 default.config 和 env.config 到 app.config 上
-  app.config = Object.assign({}, defaultConfig, envConfig);
-};
+  app.config = Object.assign({}, defaultConfig, envConfig)
+}
