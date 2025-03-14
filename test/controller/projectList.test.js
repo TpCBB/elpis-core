@@ -196,7 +196,6 @@ describe('project controller', function () {
     tmpRequest.set('proj_key', 'jd')
     tmpRequest.query({ product_id: 1 })
     const res = await tmpRequest
-    console.log('output=--->',res.body);
     assert(res.body.success === true)
     
     

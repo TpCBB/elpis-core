@@ -9,17 +9,14 @@
 
 <script setup>
 import { ref, onMounted } from 'vue'
-import curl from '$common/curl'
-import utils from '$common/utils'
+import curl from '$elpisCommon/curl'
 const tableData = ref([])
 
 onMounted(() => {
   curl({ url: '/api/project/getlist' }).then((res) => {
-    console.log(res)
   })
 })
 
-console.log(utils)
 </script>
 
 <style lang="less" scoped>

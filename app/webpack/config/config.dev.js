@@ -2,7 +2,7 @@ const merge = require("webpack-merge");
 const path = require("path");
 const webpack = require("webpack");
 // 基础配置
-const webpackBaseConfig = require("./config.base");
+const baseConfig = require("./config.base");
 // dev-server配置
 const DEV_SERVER_CONFIG = {
   HOST: "127.0.0.1", // 主机地址
@@ -13,14 +13,19 @@ const DEV_SERVER_CONFIG = {
 };
 
 // 开发阶段 entry 配置需要加入 hmr
-Object.keys(webpackBaseConfig.entry).forEach((key) => {
-  webpackBaseConfig.entry[key] = [
-   `${require.resolve('webpack-hot-middleware/client')}?path=http://${DEV_SERVER_CONFIG.HOST}:${DEV_SERVER_CONFIG.PORT}/${DEV_SERVER_CONFIG.HMR_PATH}?timeout=${DEV_SERVER_CONFIG.TIMEOUT}&reload=true}`,
-  ].concat(webpackBaseConfig.entry[key]);
+Object.keys(baseConfig.entry).forEach((key) => {
+  if(key !== 'vendor') {
+  baseConfig.entry[key] = [
+      // 主文件入口
+      baseConfig.entry[key],
+      // hmr 更新入口 官方指定 hmr 路径
+      `${require.resolve('webpack-hot-middleware/client')}?path=http://${DEV_SERVER_CONFIG.HOST}:${DEV_SERVER_CONFIG.PORT}/${DEV_SERVER_CONFIG.HMR_PATH}?timeout=${DEV_SERVER_CONFIG.TIMEOUT}&reload=true}`,
+    ]
+  }
 });
 
 // 开发模式配置
-const webpackDevConfig = merge(webpackBaseConfig, {
+const webpackDevConfig = merge(baseConfig, {
   mode: "development", // 指定开发模式
   // 开发模式下开启 sourceMap, 呈现代码的映射关系, 方便调试 
   devtool: "eval-source-map",

@@ -2,9 +2,9 @@
 const ElpisCore = require('./elpis-core')
 
 // 引入前端工程化方法
-
-const FEbuildDev = require('./app/webpack/dev.js')
-const FEbuildProd = require('./app/webpack/prod.js')
+// 会导致 webpack.base.js 中 entry 配置被覆盖 
+// const FEbuildDev = require('./app/webpack/dev.js')
+// const FEbuildProd = require('./app/webpack/prod.js')
 
 module.exports = {
   /**
@@ -18,13 +18,13 @@ module.exports = {
 
   /**
    * 编译构建前端工程
-   * @param {String} env local/prod
+   * @param {String} env local/production
    */
   frontendBuild(env) {
     if (env === 'local') {
-      FEbuildDev()
+      require('./app/webpack/dev.js')()
     } else if (env === 'production') {
-      FEbuildProd()
+      require('./app/webpack/prod.js')()
     }
   }
 }

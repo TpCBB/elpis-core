@@ -1,6 +1,6 @@
 import { ref, watch, onMounted, nextTick } from 'vue'
 import { useRoute } from 'vue-router'
-import { useMenuStore } from '$store/menu'
+import { useMenuStore } from '$elpisStore/menu'
 import _ from 'lodash'
 
 export const useSchema = function () {

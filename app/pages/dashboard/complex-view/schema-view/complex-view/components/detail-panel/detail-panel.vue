@@ -21,7 +21,7 @@
 
 <script setup>
 import { ref, inject } from 'vue'
-import $curl from '$common/curl.js'
+import $curl from '$elpisCommon/curl.js'
 import { ElNotification } from 'element-plus'
 const { components, api } = inject('schemaViewData')
 

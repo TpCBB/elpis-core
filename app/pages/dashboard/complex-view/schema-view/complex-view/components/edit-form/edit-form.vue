@@ -15,8 +15,8 @@
 <script setup>
 import { ref, inject } from 'vue'
 import { ElNotification } from 'element-plus'
-import $curl from '$common/curl.js'
-import schemaForm from '$widgets/schema-form/schema-form.vue'
+import $curl from '$elpisCommon/curl.js'
+import schemaForm from '$elpisWidgets/schema-form/schema-form.vue'
 
 const { api, components } = inject('schemaViewData')
 
