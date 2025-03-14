@@ -39,7 +39,10 @@ function handleEntry(entryList, pageEntries, htmlWebpackPluginList) {
 
 
 // 业务 webpackconfig.js
-const businessWebpackConfig = require(path.resolve(process.cwd(), 'webpack.config.js'))
+let businessWebpackConfig = {}
+try {
+  businessWebpackConfig = require(path.resolve(process.cwd(), './app/webpack.config.js'))
+} catch (error) {}
 
 /**
  * webpack基础配置
