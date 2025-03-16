@@ -4,10 +4,10 @@
       <el-menu :default-active="activeKey" mode="vertical" :ellipsis="false" @select="onMenuSelect">
         <template v-for="item in menuList">
           <!-- group -->
-          <sub-menu v-if="item.subMenu && item.subMenu.length > 0" :menu-item="item"></sub-menu>
+          <sub-menu v-if="item.subMenu && item.subMenu.length > 0" :key="item.key" :menu-item="item"></sub-menu>
 
           <!-- module -->
-          <el-menu-item v-else :index="item.key">{{ item.name }}</el-menu-item>
+          <el-menu-item v-else :key="item" :index="item.key">{{ item.name }}</el-menu-item>
         </template>
       </el-menu>
     </template>
@@ -95,7 +95,7 @@ const handleMenuSelect = (menuKey) => {
   }
 
   router.push({
-    path: `/sider${pathMap[moduleType]}`,
+    path: `/view/dashboard/sider${pathMap[moduleType]}`,
     query: {
       key: route.query.key,
       sider_key: menuKey,

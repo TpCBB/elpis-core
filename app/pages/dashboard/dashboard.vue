@@ -52,7 +52,6 @@ async function getProjectConfig() {
 }
 // 点击菜单回调
 const onMenuSelect = (menuItem) => {
-  console.log(`output->{ menuItem }`, menuItem)
   const { moduleType, key, customConfig } = menuItem
   if (key === route.query.key) {
     return
@@ -65,8 +64,9 @@ const onMenuSelect = (menuItem) => {
   }
 
   const path = pathMap[moduleType]
+  console.log('output=--->/view/dashboard${path}',`/view/dashboard${path}`);
   router.push({
-    path: path,
+    path: `/view/dashboard${path}`,
     query: {
       key: key,
       proj_key: route.query.proj_key

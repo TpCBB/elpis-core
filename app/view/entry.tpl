@@ -7,6 +7,7 @@
     <title>{{ name }}</title>
   </head>
   <body>
+    <input type="text" id="projKey" value="{{ projKey }}" style="display: none" />
     <input type="text" id="env" value="{{ env }}" style="display: none" />
     <input
       type="text"
@@ -18,11 +19,13 @@
     <div id="root"></div>
     <script>
       try {
+        const projKey = document.getElementById('projKey').value
         const env = document.getElementById("env").value;
         const options = document.getElementById("options").value;
         window.options = JSON.parse(options);
         window.env = env;
-        console.log(env, options);
+        window.projKey = projKey;
+        console.log(env, options, projKey);
       } catch (error) {}
     </script>
   </body>

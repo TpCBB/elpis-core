@@ -6,7 +6,7 @@ const ajv = new Ajv();
 module.exports = (app) => {
   return async (ctx, next) => {
     const $schema = "http://json-schema.org/draft-07/schema#";
-
+    // 只对 api 做参数校验
     if (ctx.path.indexOf("/api") < 0) {
       return await next();
     }

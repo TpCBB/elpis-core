@@ -4,7 +4,7 @@ const md5 = require("md5");
  */
 module.exports = (app) => {
   return async (ctx, next) => {
-    
+    // 只对 api 做签名校验
     if (ctx.path.indexOf("/api") < 0) {
       return await next();
     }

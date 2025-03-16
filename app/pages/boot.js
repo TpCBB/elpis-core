@@ -11,7 +11,7 @@ import '$asserts/custom.css'
 // 引入 pinia
 import pinia from '$store'
 
-import { createRouter, createWebHashHistory } from 'vue-router'
+import { createRouter, createWebHistory } from 'vue-router'
 
 /**
  * vue 主入口, 用于创建vue实例, 并挂载到dom上
@@ -34,7 +34,7 @@ export default (pageComponent, { routes, libs }) => {
 
   if (routes && routes.length) {
     const router = createRouter({
-      history: createWebHashHistory(),
+      history: createWebHistory(), // 使用 history 模式
       routes
     })
     app.use(router)
