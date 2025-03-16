@@ -8,7 +8,7 @@ module.exports = {
       menuType: 'module',
       moduleType: 'custom',
       customConfig: {
-        path: ''
+        path: '/todo'
       }
     },
     {
@@ -17,7 +17,7 @@ module.exports = {
       menuType: 'module',
       moduleType: 'custom',
       customConfig: {
-        path: ''
+        path: '/todo'
       }
     },
     {
@@ -26,7 +26,7 @@ module.exports = {
       menuType: 'module',
       moduleType: 'custom',
       customConfig: {
-        path: ''
+        path: '/todo'
       }
     }
   ]
