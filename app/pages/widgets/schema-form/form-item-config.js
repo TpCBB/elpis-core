@@ -2,6 +2,7 @@ import input from './complex-view/input/input.vue'
 import inputNumber from './complex-view/input-number/input-number.vue'
 import select from './complex-view/select/select.vue'
 import dateRange from './complex-view/date-range/date-range.vue'
+import $businessFormItemConfig from '$businessFormItemConfig'
 
 const FormItemConfig = {
   input: {
@@ -17,4 +18,8 @@ const FormItemConfig = {
     component: dateRange
   }
 }
-export default FormItemConfig
+
+export default {
+  ...FormItemConfig,
+  ...$businessFormItemConfig
+}

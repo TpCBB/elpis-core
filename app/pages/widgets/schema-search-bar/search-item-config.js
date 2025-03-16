@@ -2,6 +2,7 @@ import input from './complex-view/input/input.vue'
 import select from './complex-view/select/select.vue'
 import dynamicSelect from './complex-view/dynamic-select/dynamic-select.vue'
 import dateRange from './complex-view/date-range/date-range.vue'
+import $businessSearchItemConfig from '$businessSearchItemConfig'
 
 const SearchItemConfig = {
   input: {
@@ -18,4 +19,7 @@ const SearchItemConfig = {
   }
 }
 
-export default SearchItemConfig
+export default {
+  ...SearchItemConfig,
+  ...$businessSearchItemConfig
+}

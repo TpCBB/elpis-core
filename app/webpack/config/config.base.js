@@ -4,7 +4,7 @@ const path = require('path')
 const { VueLoaderPlugin } = require('vue-loader')
 const webpack = require('webpack')
 const merge = require("webpack-merge");
-
+const fs = require('fs')
 // 动态构造 elpis-core 将entry和htmlWebpackPlugin配置化
 const elpisPageEntries = {}
 const elpisHtmlWebpackPluginList = []
@@ -104,27 +104,52 @@ const webpackBaseConfig = merge.smart({
   // 配置模块解析的具体行为(定义 webpack 在打包时, 如何找到并加载模块)
   resolve: {
     extensions: ['.js', '.vue', '.css', '.less'],
-    alias: {
-      'vue': require.resolve('vue'),
-      '@babel/runtime/helpers/asyncToGenerator': require.resolve('@babel/runtime/helpers/asyncToGenerator'),
-      '@babel/runtime/regenerator': require.resolve('@babel/runtime/regenerator'),
-      $elpisPages: path.resolve(__dirname, '../../pages'),
-      $elpisCommon: path.resolve(__dirname, '../../pages/common'),
-      $elpisStore: path.resolve(__dirname, '../../pages/store'),
-      $elpisWidgets: path.resolve(__dirname, '../../pages/widgets'),
-      $elpisAsserts: path.resolve(__dirname, '../../pages/asserts'),
+    alias: (()=>{
+      const aliasMap = {}
 
-      $elpisUtils: path.resolve(__dirname, '../../pages/common/utils.js'),
-      $elpisCurl: path.resolve(__dirname, '../../pages/common/curl.js'),
+      // 确保这个路径不会报错
+      const blankModulPath = path.resolve(__dirname, '../../webpack/libs/blank.js')
 
-      $elpisHeaderContainer: path.resolve(__dirname, '../../pages/widgets/header-container/header-container.vue'),
-      $elpisSiderContainer: path.resolve(__dirname, '../../pages/widgets/sider-container/sider-container.vue'),
-      $elpisSchemaTable: path.resolve(__dirname, '../../pages/widgets/schema-table/schema-table.vue'),
-      $elpisSchemaForm: path.resolve(__dirname, '../../pages/widgets/schema-form/schema-form.vue'),
-      $elpisSchemaSearchBar: path.resolve(__dirname, '../../pages/widgets/schema-search-bar/schema-search-bar.vue'),
+      // 由 业务 dashboard 拓展的路由 
+      const businessDashboardRouterConfig = path.resolve(process.cwd(), './app/pages/dashboard/router.js')
+      aliasMap['$businessDashboardRouterConfig'] = fs.existsSync(businessDashboardRouterConfig) ? businessDashboardRouterConfig : blankModulPath
 
-      $elpisBoot: path.resolve(__dirname, '../../pages/boot.js'),
-    }
+      // 由 业务 schema-view components 拓展的组件 
+      const  businessComponentsConfig = path.resolve(process.cwd(), './app/pages/dashboard/complex-view/schema-view/components/component-config.js')
+      aliasMap['$businessComponentsConfig'] = fs.existsSync(businessComponentsConfig) ? businessComponentsConfig : blankModulPath
+
+      // 由 业务 schema-form components 拓展的组件 
+      const  $businessFormItemConfig = path.resolve(process.cwd(), './app/pages/widgets/schema-form/form-item-config.js')
+      aliasMap['$businessFormItemConfig'] = fs.existsSync($businessFormItemConfig) ? $businessFormItemConfig : blankModulPath
+
+      // 由 业务 schema-search-bar components 拓展的组件 
+      const  $businessSearchItemConfig = path.resolve(process.cwd(), './app/pages/widgets/schema-search-bar/search-item-config.js')
+      aliasMap['$businessSearchItemConfig'] = fs.existsSync($businessSearchItemConfig) ? $businessSearchItemConfig : blankModulPath
+
+      return {
+        'vue': require.resolve('vue'),
+        '@babel/runtime/helpers/asyncToGenerator': require.resolve('@babel/runtime/helpers/asyncToGenerator'),
+        '@babel/runtime/regenerator': require.resolve('@babel/runtime/regenerator'),
+        $elpisPages: path.resolve(__dirname, '../../pages'),
+        $elpisCommon: path.resolve(__dirname, '../../pages/common'),
+        $elpisStore: path.resolve(__dirname, '../../pages/store'),
+        $elpisWidgets: path.resolve(__dirname, '../../pages/widgets'),
+        $elpisAsserts: path.resolve(__dirname, '../../pages/asserts'),
+
+        $elpisUtils: path.resolve(__dirname, '../../pages/common/utils.js'),
+        $elpisCurl: path.resolve(__dirname, '../../pages/common/curl.js'),
+
+        $elpisHeaderContainer: path.resolve(__dirname, '../../pages/widgets/header-container/header-container.vue'),
+        $elpisSiderContainer: path.resolve(__dirname, '../../pages/widgets/sider-container/sider-container.vue'),
+        $elpisSchemaTable: path.resolve(__dirname, '../../pages/widgets/schema-table/schema-table.vue'),
+        $elpisSchemaForm: path.resolve(__dirname, '../../pages/widgets/schema-form/schema-form.vue'),
+        $elpisSchemaSearchBar: path.resolve(__dirname, '../../pages/widgets/schema-search-bar/schema-search-bar.vue'),
+
+        $elpisBoot: path.resolve(__dirname, '../../pages/boot.js'),
+
+        ...aliasMap
+      }
+    })()
   },
 
   // 插件配置
