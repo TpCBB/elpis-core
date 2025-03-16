@@ -2,7 +2,7 @@
 const ElpisCore = require('./elpis-core')
 
 // 引入前端工程化方法
-// 会导致 webpack.base.js 中 entry 配置被覆盖 
+// 会导致 webpack.base.js 中 entry 配置被覆盖
 // const FEbuildDev = require('./app/webpack/dev.js')
 // const FEbuildProd = require('./app/webpack/prod.js')
 
@@ -14,6 +14,17 @@ module.exports = {
   serverStart(options = {}) {
     const app = ElpisCore.start(options)
     return app
+  },
+
+  /**
+   * 服务端基础
+   */
+  Controller: {
+    Base: require('./app/controller/base.js')
+  },
+
+  Service: {
+    Base: require('./app/service/base.js')
   },
 
   /**
