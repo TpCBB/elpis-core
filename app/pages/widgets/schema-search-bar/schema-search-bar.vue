@@ -5,7 +5,7 @@
       <!-- 展示子组件 -->
       <component
         :is="SearchItemConfig[schemaItem.option?.comType].component"
-        :ref="handleSearchComList"
+        ref="searchComList"
         :schema-key="key"
         :schema="schemaItem"
         @loaded="handleLoaded"
@@ -55,19 +55,14 @@ const { schema } = toRefs(props)
 const emit = defineEmits(['search', 'reset', 'load'])
 
 const searchComList = ref([])
-const handleSearchComList = (el) => {
-  searchComList.value.push(el)
-}
 
 const getValue = () => {
-  let dtoObj = {}
-  searchComList.value.forEach((component) => {
-    dtoObj = {
-      ...dtoObj,
+  return searchComList.value.reduce((acc, component) => {
+    return {
+      ...acc,
       ...component?.getValue()
     }
-  })
-  return dtoObj
+  }, {})
 }
 
 let childComLoadedCount = 0

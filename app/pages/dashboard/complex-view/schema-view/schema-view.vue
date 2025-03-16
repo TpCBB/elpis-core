@@ -1,12 +1,17 @@
 <template>
   <el-row class="schema-view">
-    <search-panel
-      v-if="searchSchema?.properties && Object.keys(searchSchema.properties).length > 0"
-      @search="onSearch"
-      @reset="onReset"
-      @load="onLoad"
-    ></search-panel>
-    <table-panel @operation="onTableOperation"></table-panel>
+    <template v-if="searchSchema?.properties && Object.keys(searchSchema.properties).length > 0">
+      <search-panel @search="onSearch" @reset="onReset" @load="onLoad"></search-panel>
+    </template>
+    <table-panel ref="tableRef" @operation="onTableOperation"></table-panel>
+
+    <component
+      v-for="(item, key) in components"
+      :is="componentConfig[key]?.component"
+      :key="key"
+      ref="componentsRef"
+      @command="onComponentCommand"
+    ></component>
   </el-row>
 </template>
 
@@ -16,7 +21,8 @@ import SearchPanel from './complex-view/search-panel/search-panel.vue'
 import TablePanel from './complex-view/table-panel/table-panel.vue'
 import { useSchema } from './hook/schema.js'
 import { provide } from 'vue'
-const { api, tableSchema, tableConfig, searchSchema, searchConfig } = useSchema()
+import componentConfig from './complex-view/components/componentConfig.js'
+const { api, tableSchema, tableConfig, searchSchema, searchConfig, components } = useSchema()
 const apiParams = ref({})
 provide('schemaViewData', {
   api,
@@ -24,8 +30,11 @@ provide('schemaViewData', {
   tableConfig,
   searchSchema,
   searchConfig,
-  apiParams
+  apiParams,
+  components
 })
+const tableRef = ref(null)
+const componentsRef = ref([])
 
 const onSearch = (searchValObj) => {
   apiParams.value = searchValObj
@@ -38,9 +47,35 @@ const onReset = () => {
 const onLoad = (searchValObj) => {
   console.log(`output->onLoad`, searchValObj)
 }
+// table 时间映射
+const EventHandlerMap = {
+  ShowComponent: ShowComponent
+}
 
-const onTableOperation = (operationObj) => {
-  console.log(`output->onTableOperation`, operationObj)
+const onTableOperation = ({ btnConfig, rowData }) => {
+  const { eventKey } = btnConfig
+  if (EventHandlerMap[eventKey]) {
+    EventHandlerMap[eventKey]({ btnConfig, rowData })
+  }
+}
+
+function ShowComponent({ btnConfig, rowData }) {
+  const { comName } = btnConfig.eventOption
+
+  if (!comName) {
+    console.error(`output=--->没有配置组件`)
+    return
+  }
+  const comRef = componentsRef.value.find((item) => item.comName === comName)
+  if (!comRef || typeof comRef.show !== 'function') {
+    console.error(`output=--->没有找到组件: ${comName}`)
+    return
+  }
+  comRef.show(rowData)
+}
+// 组件事件
+const onComponentCommand = ({ event }) => {
+  console.log(`output->onComponentCommand`, event)
 }
 </script>
 

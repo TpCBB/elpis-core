@@ -44,7 +44,7 @@ const docs = {
               // 字段在table中的配置
               tableOption: {
                 ...elTableColumnConfig, // 标准的 el-table-column 配置
-                visiable: true // 是否显示
+                visible: true // 是否显示
               },
               // 字段在search-bar中的配置
               searchOption: {
@@ -59,11 +59,39 @@ const docs = {
                   }
                 ]
               },
+              // 字段在不同动态 component 中的相关配置, 前缀对应 componentConfig 中键值
+              // 例如: componentConfig.createForm 对应 createFormOption
+              // 字段在 createForm 中的相关配置
+              createFormOption: {
+                ...eleComponentConfig, // 标准的 el-component 配置, 可以兼容原 element-ui 的属性
+                comType: '', // 控件类型 input/select/input-number
+                visible: 'true', // 是否显示 默认为 true
+                disabled: 'false', // 是否禁用 默认为 false
+
+                // comType 为 select 的时候
+                enumList: [] // 枚举列表
+              },
+              // 字段在editForm中的相关配置
+              editFormOption: {
+                ...eleComponentConfig, // 标准的 el-component 配置, 可以兼容原 element-ui 的属性
+                comType: '', // 控件类型 input/select/input-number
+                visible: 'true', // 是否显示 默认为 true
+                disabled: 'false', // 是否禁用 默认为 false
+                
+                // comType 为 select 的时候
+                enumList: [] // 枚举列表
+              },
+              // 字段在 detail-panel 中的相关配置
+              detailPanelOption: {
+                ...eleComponentConfig, // 标准的 el-component 配置, 可以兼容原 element-ui 的属性
+                visible: 'true', // 是否显示 默认为 true
+              },
               // 字段在form中的配置
               formOption: {}
             },
             ...other
-          }
+          },
+          required: [] // 必填字段
         },
         // table 相关配置
         tableConfig: {
@@ -71,7 +99,11 @@ const docs = {
             {
               label: '', //按钮中文名
               eventKey: '', // 事件名称
-              eventOption: {}, // 按钮配置
+              // 按钮配置
+              eventOption: {
+                // 当 eventKey 为 showComponent 时, 需要配置以下属性
+                comName: ""
+              },
               ...elButtonConfig // 标准的 el-button 配置
             },
             ...otherButtons
@@ -81,6 +113,8 @@ const docs = {
               label: '', // 按钮中文名
               eventKey: '', // 按钮事件名
               eventOption: {
+                // 当 eventKey 为 showComponent 时, 需要配置以下属性
+                comName: "",
                 // 当 eventKey 为 'edit' 时, 需要配置以下属性
                 params: {
                   // 以下为请求参数
@@ -104,7 +138,25 @@ const docs = {
           ] // 行按钮
         },
         searchConfig: {}, // search-bar 相关配置
-        components: {} //模块组件
+        componentConfig: {
+          // create-form 表单相关配置
+          createForm: {
+            title: '', // 表单标题
+            saveBtnText: ''
+          },
+          // edit-form 表单相关配置
+          editForm: {
+            title: '', // 表单标题
+            saveBtnText: '',
+            mainKey: '', // 主键字段
+            mainValue: '' // 主键值
+          },
+          // detail-panel 详情面板
+          detailPanel: {
+            title: '', // 详情标题
+            mainKey: '', // 主键字段
+          }
+        } //模块组件
       },
 
       // moduleType 为 sider 时, 需要配置以下属性

@@ -9,9 +9,10 @@ export const useSchema = function () {
 
   const api = ref('')
   const tableSchema = ref({})
-  const tableConfig = ref({})
+  const tableConfig = ref()
   const searchSchema = ref({})
-  const searchConfig = ref({})
+  const searchConfig = ref()
+  const components = ref({})
 
   //   构造 SchemaConfig 相关配置, 输送给 schemaView 解析
   const buildData = function () {
@@ -48,6 +49,19 @@ export const useSchema = function () {
 
         searchSchema.value = dtoSchema
         searchConfig.value = sConfig.schema?.searchConfig
+
+        // 构造 components : { comKey: { schema:{}, config: {} } }
+        const { componentConfig } = sConfig.schema
+        if (componentConfig && Object.keys(componentConfig).length > 0) {
+          const dtoComponents = {}
+          for (const comKey in componentConfig) {
+            dtoComponents[comKey] = {
+              schema: buidlDtoSchema(configSchema, comKey),
+              config: componentConfig[comKey]
+            }
+          }
+          components.value = dtoComponents
+        }
       })
     }
   }
@@ -76,6 +90,13 @@ export const useSchema = function () {
         }
         // 处理 type Option
         dtoProps = Object.assign({}, dtoProps, { option: props[`${type}Option`] })
+        
+        // 处理 required 配置
+        const { required } = _schema
+        if (required && required.find((pk) => key === pk)) {
+          dtoProps.option.required = true
+        }
+
         dtoSchema.properties[key] = dtoProps
       }
     }
@@ -99,6 +120,7 @@ export const useSchema = function () {
     tableSchema,
     tableConfig,
     searchSchema,
-    searchConfig
+    searchConfig,
+    components
   }
 }
