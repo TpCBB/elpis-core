@@ -37,12 +37,12 @@
 </template>
 
 <script setup>
-import HeaderContainer from '$widgets/header-container/header-container.vue'
+import HeaderContainer from '$elpisWidgets/header-container/header-container.vue'
 import { ArrowDown } from '@element-plus/icons-vue'
 import { useRoute } from 'vue-router'
 import SubMenu from './complex-view/sub-menu/sub-menu.vue'
-import { useProjectStore } from '$store/project'
-import { useMenuStore } from '$store/menu'
+import { useProjectStore } from '$elpisStore/project'
+import { useMenuStore } from '$elpisStore/menu'
 import { ref, watch, onMounted } from 'vue'
 const route = useRoute()
 const projectStore = useProjectStore()

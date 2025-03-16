@@ -7,7 +7,7 @@
 
 <script setup>
 import { ref } from 'vue'
-import utils from '$common/utils'
+import utils from '$elpisCommon/utils'
 
 const content = ref('')
 

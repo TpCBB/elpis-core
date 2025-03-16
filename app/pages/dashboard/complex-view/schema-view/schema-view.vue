@@ -66,7 +66,9 @@ function ShowComponent({ btnConfig, rowData }) {
     console.error(`output=--->没有配置组件`)
     return
   }
+  console.log('componentsRef=--->',components);
   const comRef = componentsRef.value.find((item) => item.comName === comName)
+  console.log('comRef=--->',componentsRef.value);
   if (!comRef || typeof comRef.show !== 'function') {
     console.error(`output=--->没有找到组件: ${comName}`)
     return

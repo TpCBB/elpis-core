@@ -3,10 +3,6 @@ const path = require("path");
 const Happypack = require("happypack"); // 多线程打包
 const os = require("os");
 const webpackBaseConfig = require("./config.base");
-const SpeedMeasurePlugin = require("speed-measure-webpack-plugin");
-const { VueLoaderPlugin } = require("vue-loader");
-const dotenv = require("dotenv");
-dotenv.config();
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const CssMinimizerPlugin = require("css-minimizer-webpack-plugin");
 const CleanWebpackPlugin = require("clean-webpack-plugin");
@@ -51,12 +47,12 @@ let webpackProdConfig = merge.smart(webpackBaseConfig, {
     rules: [
       {
         test: /\.css$/,
-        use: [MiniCssExtractPlugin.loader, "happypack/loader?id=css"],
+        use: [MiniCssExtractPlugin.loader, `${require.resolve("happypack/loader")}?id=css`],
       },
       {
         test: /\.js$/,
-        include: [path.resolve(process.cwd(), "./app/pages")],
-        use: ["happypack/loader?id=js"],
+        include: [path.resolve(__dirname, "../../pages"), path.resolve(process.cwd(), "./app/pages")],
+        use: [`${require.resolve("happypack/loader")}?id=js`],
       },
     ],
   },
@@ -84,9 +80,9 @@ let webpackProdConfig = merge.smart(webpackBaseConfig, {
       ...happypackCommonConfig,
       id: "js",
       loaders: [
-        `babel-loader?${JSON.stringify({
-          presets: ["@babel/preset-env"],
-          plugins: ["@babel/plugin-transform-runtime"],
+        `${require.resolve("babel-loader")}?${JSON.stringify({
+          presets: [require.resolve("@babel/preset-env")],
+          plugins: [require.resolve("@babel/plugin-transform-runtime")],
         })}`,
       ],
     }),
@@ -96,7 +92,7 @@ let webpackProdConfig = merge.smart(webpackBaseConfig, {
       id: "css",
       loaders: [
         {
-          path: "css-loader",
+          path: require.resolve("css-loader"),
           options: {
             importLoaders: 1,
           },
@@ -126,18 +122,5 @@ let webpackProdConfig = merge.smart(webpackBaseConfig, {
     ],
   },
 });
-
-// 如果SPEED_MEASURE_FLAG为true，则启用SpeedMeasurePlugin
-if (process.env.SPEED_MEASURE_FLAG) {
-  const smp = new SpeedMeasurePlugin();
-  // 删除VueLoaderPlugin 会与SpeedMeasurePlugin冲突 与 MiniCssExtractPlugin 也冲突
-  let vueLoaderPluginIndex = webpackProdConfig.plugins.find((plugin) => plugin instanceof VueLoaderPlugin);
-  if (vueLoaderPluginIndex) {
-    webpackProdConfig.plugins.splice(vueLoaderPluginIndex, 1);
-  }
-  webpackProdConfig = smp.wrap(webpackProdConfig);
-  // 添加VueLoaderPlugin
-  webpackProdConfig.plugins.push(new VueLoaderPlugin());
-}
 
 module.exports = webpackProdConfig;

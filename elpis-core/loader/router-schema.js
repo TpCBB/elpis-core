@@ -1,6 +1,6 @@
-const path = require("path");
-const glob = require("glob");
-const { sep } = path;
+const path = require('path')
+const glob = require('glob')
+const { sep } = path
 /**
  * router-schema loader
  * @param {object} app
@@ -18,18 +18,25 @@ const { sep } = path;
  *
  */
 module.exports = (app) => {
-  // 读取 router-schema下所有的文件
-  const routerSchemaPath = path.resolve(app.businessDir, `.${sep}router-schema`);
-  const fileList = glob.sync(
-    path.resolve(routerSchemaPath, `.${sep}**${sep}**.js`)
-  );
   //注册所有router-schema
-  let routerSchema = {};
-  fileList.forEach((file) => {
-    routerSchema = {
-      ...routerSchema,
-      ...require(path.resolve(file)),
-    };
-  });
-  app.routerSchema = routerSchema;
-};
+  let routerSchema = {}
+  // 读取 核心中的 router-schema 下所有的文件
+  const ElpisRouterSchemaPath = path.resolve(__dirname, `..${sep}..${sep}app${sep}router-schema`)
+  const ElpisFileList = glob.sync(path.resolve(ElpisRouterSchemaPath, `.${sep}**${sep}**.js`))
+  loadRouterSchema(app, ElpisFileList)
+
+  // 读取 业务中的 router-schema 下所有的文件
+  const BussinessRouterSchemaPath = path.resolve(app.businessDir, `.${sep}router-schema`)
+  const BussinessFileList = glob.sync(path.resolve(BussinessRouterSchemaPath, `.${sep}**${sep}**.js`))
+  loadRouterSchema(app, BussinessFileList)
+
+  function loadRouterSchema(app, fileList) {
+    fileList.forEach((file) => {
+      routerSchema = {
+        ...routerSchema,
+        ...require(path.resolve(file))
+      }
+    })
+    app.routerSchema = routerSchema
+  }
+}

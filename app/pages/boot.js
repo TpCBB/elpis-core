@@ -4,12 +4,12 @@ import { createApp } from 'vue'
 import ElementPlus from 'element-plus'
 import 'element-plus/theme-chalk/index.css'
 import 'element-plus/theme-chalk/dark/css-vars.css'
-import '$asserts/dark/css-vars.css'
+import '$elpisAsserts/dark/css-vars.css'
 // 引入 custom.css
-import '$asserts/custom.css'
+import '$elpisAsserts/custom.css'
 
 // 引入 pinia
-import pinia from '$store'
+import pinia from '$elpisStore'
 
 import { createRouter, createWebHistory } from 'vue-router'
 

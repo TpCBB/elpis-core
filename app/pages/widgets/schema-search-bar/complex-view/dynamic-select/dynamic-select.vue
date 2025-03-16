@@ -6,7 +6,7 @@
 
 <script setup>
 import { ref, onMounted } from 'vue'
-import $curl from '$common/curl'
+import $curl from '$elpisCommon/curl'
 const { schemaKey, schema } = defineProps({
   schemaKey: {
     type: String,

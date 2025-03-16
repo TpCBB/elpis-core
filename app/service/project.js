@@ -1,7 +1,7 @@
 module.exports = (app) => {
-  const BaseService = require('./base')(app)
+  const baseConfig = require('./base')(app)
   const model = require('../../model/index')(app)
-  return class ProjectService extends BaseService {
+  return class ProjectService extends baseConfig {
     /**
      * 根据 projKey 获取项目配置
      * @param {string} projKey 项目key

@@ -1,5 +1,5 @@
-import boot from "$pages/boot";
-import page1 from "$pages/page1/page1.vue";
+import boot from "$elpisPages/boot";
+import page1 from "$elpisPages/page1/page1.vue";
 
 const routes = [];
 const libs = [];

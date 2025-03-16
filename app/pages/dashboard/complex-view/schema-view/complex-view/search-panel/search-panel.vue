@@ -7,7 +7,7 @@
 <script setup>
 import { inject } from 'vue'
 const { searchSchema } = inject('schemaViewData')
-import SchemaSearchBar from '$widgets/schema-search-bar/schema-search-bar.vue'
+import SchemaSearchBar from '$elpisWidgets/schema-search-bar/schema-search-bar.vue'
 const emit = defineEmits(['search', 'reset', 'load'])
 
 const onSearch = (searchValObj) => {
