@@ -1,28 +1,34 @@
-const KoaRouter = require("koa-router");
-const glob = require("glob");
-const path = require("path");
-const sep = path.sep;
+const KoaRouter = require('koa-router')
+const glob = require('glob')
+const path = require('path')
+const sep = path.sep
 
 /**
 /**
  * router loader
- * @param {object} app koa实例
+ * @param {object} app Koa application
  *
- * 文件目录: app/router/**.js
+ * File location: app/router
  *
- * 解析 app/router/**.js 加载到KoaRouter
+ * Load route definitions into Koa Router
  *
  */
 module.exports = (app) => {
-  // 找到router的文件路径
-  const routerPath = path.resolve(app.businessDir, `${sep}router`);
-  // router目录下所有文件
-  const fileList = glob.sync(path.resolve(routerPath), `${sep}**${sep}**.js`);
+  // Create the Koa Router instance
+  const router = new KoaRouter()
 
-  // 实例化koarouter
-  const router = new KoaRouter();
+  // Discover application route files under app/router
+  const BussinessRouterPath = path.resolve(app.businessDir, `.${sep}router`)
+  const BussinessFileList = glob.sync(path.resolve(BussinessRouterPath, `.${sep}**${sep}**.js`))
 
-  // 注册router
+  // Discover core route files under app/router
+  const ElpisRouterPath = path.resolve(__dirname, `..${sep}..${sep}app${sep}router`)
+  const ElpisFileList = glob.sync(path.resolve(ElpisRouterPath, `.${sep}**${sep}**.js`))
+
+  // All route definition files
+  const fileList = [...BussinessFileList, ...ElpisFileList]
+
+  // Register routes
   fileList.forEach((file) => {
     /**
      * eg. file: app/router/api.js
@@ -31,16 +37,16 @@ module.exports = (app) => {
      * }
      */
 
-    require(path.resolve(file))(app, router);
-  });
+    require(path.resolve(file))(app, router)
+  })
 
-  // 路由404
-  router.all("*", async (ctx, next) => {
-    ctx.status = 302; // 临时重定向
-    ctx.redirect(`${app?.options?.homePage ?? "/"}`);
-  });
+  // Handle unmatched routes
+  router.all('*', async (ctx, next) => {
+    ctx.status = 302 // Temporary redirect
+    ctx.redirect(`${app?.options?.homePage ?? '/'}`)
+  })
 
-  // 挂载到app实例上
-  app.use(router.routes());
-  app.use(router.allowedMethods()); // 处理405和501
-};
+  // Attach the router to the Koa application
+  app.use(router.routes())
+  app.use(router.allowedMethods()) // Handle HTTP 405 and 501 responses
+}

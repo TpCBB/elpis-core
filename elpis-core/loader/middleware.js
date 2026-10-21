@@ -1,71 +1,74 @@
-const path = require("path");
-const { sep } = require("path");
-const glob = require("glob"); // 读取目录下的所有文件
+const path = require('path')
+const { sep } = require('path')
+const glob = require('glob') // Discover files in the directory
 /**
  * middleware loader
- * @param {object} app  Koa 实例
+ * @param {object} app Koa application
  *
- * 加载所有中间件, 并注册到 Koa 实例上
- * 通过 'app.middleware.${目录}.${文件}' 访问
+ * Load middleware modules and register them on the Koa application
+ * Access middleware through app.middlewares.<directory>.<file>
  * app/middleware
  *    |
  *    |-- custom-module
  *            |
  *            |-- custom-middleware.js
  *
- * => app.middleware.customModule.customMiddleware 访问到文件
+ * Access the module as app.middlewares.customModule.customMiddleware
  *      ↓
- * app.middleware = {
+ * app.middlewares = {
  *          customModule: {
- *              customMiddleware: require(文件地址)
+ *              customMiddleware: require(modulePath)
  *            }
  *      }
  *
  */
 module.exports = (app) => {
-  // 读取 app/middleware/**/**.js目录下的所有文件
-  const middlewarePath = path.resolve(app.businessDir, `${sep}middleware`);
-  const fileList = glob.sync(
-    path.resolve(middlewarePath, `${sep}**${sep}**.js`)
-  );
+  // Discover files under app/middleware
+  // Initialize the middleware registry for the Koa application
+  const middlewares = {}
+  const ElpisMiddlewarePath = path.resolve(__dirname, `..${sep}..${sep}app${sep}middleware`)
+  const ElpisFileList = glob.sync(path.resolve(ElpisMiddlewarePath, `.${sep}**${sep}**.js`))
+  loadMiddleware(app, ElpisFileList)
 
-  // 初始化 middleware 对象 最终要挂在到 app 实例上
-  const middlewares = {};
+  // Discover application middleware under app/middleware
+  const BussinessMiddlewarePath = path.resolve(app.businessDir, `.${sep}middleware`)
+  const BussinessFileList = glob.sync(path.resolve(BussinessMiddlewarePath, `.${sep}**${sep}**.js`))
+  loadMiddleware(app, BussinessFileList)
 
-  // 遍历所有文件目录,把内容加载到 app.middleware 上
-  fileList.forEach((file) => {
-    // 提取文件名称
-    let fileName = path.resolve(file);
+  function loadMiddleware(app, fileList) {
+    // Load each file into app.middlewares
+    fileList.forEach((file) => {
+      // Extract the file name
+      let fileName = path.resolve(file)
 
-    // 截取路径 app/middleware/custom-module/custom-middleware.js => custom-module/custom-middleware
-    // 去掉 app/middleware/
-    fileName = fileName.substring(
-      fileName.lastIndexOf(`middleware${sep}`) + `middleware${sep}`.length,
-      fileName.lastIndexOf(`.js`)
-    );
+      // Extract the relative path: app/middleware/custom-module/custom-middleware.js => custom-module/custom-middleware
+      // Remove the app/middleware/ prefix
+      fileName = fileName.substring(
+        fileName.lastIndexOf(`middleware${sep}`) + `middleware${sep}`.length,
+        fileName.lastIndexOf(`.js`)
+      )
 
-    // 把文件名转换成驼峰命名  custom-module/custom-middleware => customModule/customMiddleware
-    fileName = fileName.replace(/[_-][a-z]/gi, (s) =>
-      s.substring(1).toUpperCase()
-    );
+      // Convert path segments to camelCase: custom-module/custom-middleware => customModule/customMiddleware
+      fileName = fileName.replace(/[_-][a-z]/gi, (s) => s.substring(1).toUpperCase())
 
-    // 把文件名转换成数组
-    let fileNames = fileName.split(sep);
+      // Split the relative path into segments
+      let fileNames = fileName.split(sep)
 
-    // [custom-module, custom-middleware] = > { customModule: { customMiddleware: require(文件地址) } }
-    let temMiddleware = middlewares;
-    for (let i = 0; i < fileNames.length; i++) {
-      if (i == fileNames.length - 1) {
-        temMiddleware[fileNames[i]] = require(path.resolve(file))(app); // 每个文件都传入 app 实例
-      } else {
-        if (!temMiddleware[fileNames[i]]) {
-          temMiddleware[fileNames[i]] = {};
+      // [custom-module, custom-middleware] => { customModule: { customMiddleware: require(modulePath) } }
+      let temMiddleware = middlewares
+      for (let i = 0; i < fileNames.length; i++) {
+        if (i == fileNames.length - 1) {
+          temMiddleware[fileNames[i]] = require(path.resolve(file))(app) // Pass the Koa application to each module
+        } else {
+          if (!temMiddleware[fileNames[i]]) {
+            temMiddleware[fileNames[i]] = {}
+          }
+          temMiddleware = temMiddleware[fileNames[i]]
         }
-        temMiddleware = temMiddleware[fileNames[i]];
       }
-    }
-  });
+    })
 
-  // 把 middleware 对象挂在到 app 实例上
-  app.middlewares = middlewares;
-};
+    // Attach the middleware registry to the Koa application
+    app.middlewares = middlewares
+  }
+}

@@ -1,51 +1,57 @@
-const path = require("path");
-const { sep } = require("path");
+const path = require('path')
+const { sep } = require('path')
 
 /**
  * config loader
- * @param {object} app koa实例
+ * @param {object} app Koa application
  *
- * 配置区分 本地/测试/生产 通过 env 环境读取不同的文件配置 env.config
- * 通过env.config 覆盖 default.config 加载到 app.config 上
+ * Load environment-specific configuration for local, beta, or production
+ * Override default configuration with environment settings and assign the result to app.config
  *
- * 项目根目录yourproject/config/
+ * Project configuration directory: yourproject/config/
  *
- * 目录下对应的 config 配置
- * 默认配置: config/config.default.js
- * 本地配置: config/config.local.js
- * 测试配置: config/config.beta.js
- * 生产配置: config/config.prod.js
+ * Configuration files in this directory
+ * Default configuration: config/config.default.js
+ * Local configuration: config/config.local.js
+ * Beta configuration: config/config.beta.js
+ * Production configuration: config/config.prod.js
  *
  */
 
 module.exports = (app) => {
-  // 获取 config 目录
-  const configPath = path.resolve(app.baseDir, `${sep}config`);
+  // Read the default configuration
+  let defaultConfig = {}
+  // Read the default configuration
 
-  // 获取 default.config
-  let defaultConfig = {};
-  try {
-    defaultConfig = require(path.resolve(
-      configPath,
-      `${sep}config.default.js`
-    ));
-  } catch (error) {
-    console.log(`[exception] config.default.js not found`);
-  }
+  // Read the core configuration directory
+  const ElpisConfigPath = path.resolve(__dirname, `..${sep}..${sep}config`)
+  defaultConfig = require(path.resolve(ElpisConfigPath, `.${sep}config.default.js`))
 
-  // 根据环境 获取 env.config
-  let envConfig = {};
+  // Read the application configuration directory
+  const BussinessConfigPath = path.resolve(process.cwd(), `.${sep}config`)
+
   try {
-    if (app.isLocal()) {
-      envConfig = require(path.resolve(configPath, `${sep}config.local.js`));
-    } else if (app.isBeta()) {
-      envConfig = require(path.resolve(configPath, `${sep}config.beta.js`));
-    } else if (app.isProd()) {
-      envConfig = require(path.resolve(configPath, `${sep}config.prod.js`));
+    defaultConfig = {
+      ...defaultConfig,
+      ...require(path.resolve(BussinessConfigPath, `.${sep}config.default.js`))
     }
   } catch (error) {
-    console.log(`[exception] config.${app.env}.js not found`);
+    console.log(`[exception] config.default.js not found`)
   }
-  // 合并 default.config 和 env.config 到 app.config 上
-  app.config = Object.assign({}, defaultConfig, envConfig);
-};
+
+  // Read the configuration for the current environment
+  let envConfig = {}
+  try {
+    if (app.env.isLocal()) {
+      envConfig = require(path.resolve(BussinessConfigPath, `.${sep}config.local.js`))
+    } else if (app.env.isBeta()) {
+      envConfig = require(path.resolve(BussinessConfigPath, `.${sep}config.beta.js`))
+    } else if (app.env.isProd()) {
+      envConfig = require(path.resolve(BussinessConfigPath, `.${sep}config.prod.js`))
+    }
+  } catch (error) {
+    console.log(`[exception] config.${app.env.get()}.js not found`)
+  }
+  // Merge default and environment configuration into app.config
+  app.config = Object.assign({}, defaultConfig, envConfig)
+}

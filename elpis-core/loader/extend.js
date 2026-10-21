@@ -1,53 +1,50 @@
-const path = require("path");
-const { sep } = require("path");
-const glob = require("glob"); // 读取目录下的所有文件
+const path = require('path')
+const { sep } = require('path')
+const glob = require('glob') // Discover files in the directory
 /**
  * extend loader
- * @param {object} app  Koa 实例
+ * @param {object} app Koa application
  *
- * 加载所有文件, 并注册到 Koa 实例上
- * 通过 'app.extend.${目录}.${文件}' 访问
- * app/extend
- *     |
- *     |-- custom-extend.js
- *
- * => app.extend.customModule.customExtend 访问到文件
- *      ↓
- * app.extend = {
- *          customModule: {
- *              customExtend: require(文件地址)
- *            }
- *      }
+ * Load modules and register them on the Koa application
+ * Extensions attach directly to the Koa application.
+ * app/extend/custom-extend.js becomes app.customExtend.
+ * Each module exports a factory that receives the Koa application.
  *
  */
 module.exports = (app) => {
-  // 读取 app/extend/**.js目录下的所有文件
-  const extendPath = path.resolve(app.businessDir, `${sep}extend`);
-  const fileList = glob.sync(path.resolve(extendPath, `${sep}**${sep}**.js`));
+  // Discover core files under app/extend
+  const ElpisExtendPath = path.resolve(__dirname, `..${sep}..${sep}app${sep}extend`)
+  const ElpisFileList = glob.sync(path.resolve(ElpisExtendPath, `.${sep}**${sep}**.js`))
+  loadExtend(app, ElpisFileList)
 
-  // 遍历所有文件目录 把extend挂载到app实例上
-  fileList.forEach((file) => {
-    // 提取文件名称
-    let fileName = path.resolve(file);
+  // Discover application files under app/extend
+  const BussinessExtendPath = path.resolve(app.businessDir, `.${sep}extend`)
+  const BussinessFileList = glob.sync(path.resolve(BussinessExtendPath, `.${sep}**${sep}**.js`))
+  loadExtend(app, BussinessFileList)
 
-    // 截取路径 app/extend/custom-extend.js => custom-extend
-    // 去掉 app/extend/
-    fileName = fileName.substring(
-      fileName.lastIndexOf(`extend${sep}`) + `extend${sep}`.length,
-      fileName.lastIndexOf(`.js`)
-    );
+  function loadExtend(app, fileList) {
+    // Load each extension onto the Koa application
+    fileList.forEach((file) => {
+      // Extract the file name
+      let fileName = path.resolve(file)
 
-    // 把文件名转换成驼峰命名  custom-extend => customExtend
-    fileName = fileName.replace(/[_-][a-z]/gi, (s) =>
-      s.substring(1).toUpperCase()
-    );
+      // Extract the relative path: app/extend/custom-extend.js => custom-extend
+      // Remove the app/extend/ prefix
+      fileName = fileName.substring(
+        fileName.lastIndexOf(`extend${sep}`) + `extend${sep}`.length,
+        fileName.lastIndexOf(`.js`)
+      )
 
-    // 过滤app已存在的key 重名处理
-    if (Object.prototype.hasOwnProperty.call(app, fileName)) {
-      console.log(`[extend load error] ${fileName} is already exists`);
-      return;
-    }
-    // 挂载extend到app实例上
-    app[fileName] = require(path.resolve(file))(app);
-  });
-};
+      // Convert the name to camelCase: custom-extend => customExtend
+      fileName = fileName.replace(/[_-][a-z]/gi, (s) => s.substring(1).toUpperCase())
+
+      // Skip keys already present on the application to avoid collisions
+      if (Object.prototype.hasOwnProperty.call(app, fileName)) {
+        console.log(`[extend load error] ${fileName} is already exists`)
+        return
+      }
+      // Attach the extension to the Koa application
+      app[fileName] = require(path.resolve(file))(app)
+    })
+  }
+}

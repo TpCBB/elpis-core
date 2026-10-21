@@ -1,0 +1,20 @@
+html,
+body {
+  height: 100%;
+}
+
+#root {
+  height: 100%;
+}
+
+input:-webkit-autofill {
+  /* Set the autofill input background to #121212 */
+  box-shadow: 0 0 0px 1000px #121212 inset;
+}
+
+
+/* Scrollbar styles for scrollable containers */
+html ::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+}

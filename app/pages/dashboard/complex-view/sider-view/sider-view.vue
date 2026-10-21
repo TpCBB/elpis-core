@@ -1,0 +1,113 @@
+<template>
+  <sider-container>
+    <template #menu-content>
+      <el-menu :default-active="activeKey" mode="vertical" :ellipsis="false" @select="onMenuSelect">
+        <template v-for="item in menuList">
+          <!-- group -->
+          <sub-menu v-if="item.subMenu && item.subMenu.length > 0" :key="item.key" :menu-item="item"></sub-menu>
+
+          <!-- module -->
+          <el-menu-item v-else :key="item" :index="item.key">{{ item.name }}</el-menu-item>
+        </template>
+      </el-menu>
+    </template>
+    <template #main-content>
+      <router-view></router-view>
+    </template>
+  </sider-container>
+</template>
+
+<script setup>
+import { ref, onMounted, watch } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
+import SiderContainer from '$elpisWidgets/sider-container/sider-container.vue'
+import { useMenuStore } from '$elpisStore/menu'
+import SubMenu from './complex-view/sub-menu.vue'
+
+const route = useRoute()
+const router = useRouter()
+const menuStore = useMenuStore()
+
+const menuList = ref([])
+const setMenuList = () => {
+  const menuItem = menuStore.findMenuItem({
+    key: 'key',
+    value: route.query.key
+  })
+  if (menuItem && menuItem.siderConfig && menuItem.siderConfig.menu) {
+    menuList.value = menuItem.siderConfig.menu
+  }
+}
+
+const activeKey = ref('')
+const setActiveKey = (key) => {
+  let siderMenuItem = menuStore.findMenuItem({
+    key: 'key',
+    value: route.query.sider_key
+  })
+
+  //Select the first menu item on the initial load
+  if (!siderMenuItem) {
+    const hMenuItem = menuStore.findMenuItem({
+      key: 'key',
+      value: route.query.key
+    })
+    if (hMenuItem && hMenuItem.siderConfig && hMenuItem.siderConfig.menu) {
+      const siderMenuList = hMenuItem.siderConfig.menu
+      siderMenuItem = menuStore.findFirstMenuItem(siderMenuList) // Find the first item in the sidebar menu
+      if (siderMenuItem) {
+        handleMenuSelect(siderMenuItem.key)
+      }
+    }
+  }
+
+  activeKey.value = siderMenuItem?.key
+}
+
+watch(
+  [() => route.query.key, () => menuStore.menuList],
+  () => {
+    setMenuList()
+    setActiveKey()
+  },
+  { deep: true }
+)
+
+const onMenuSelect = (menuKey) => {
+  handleMenuSelect(menuKey)
+}
+
+const handleMenuSelect = (menuKey) => {
+  const menuItem = menuStore.findMenuItem({
+    key: 'key',
+    value: menuKey
+  })
+  const { moduleType, key, customConfig } = menuItem
+
+  const pathMap = {
+    iframe: '/iframe',
+    schema: '/schema',
+    custom: customConfig?.path
+  }
+
+  if (key === route.query.sider_key) {
+    return
+  }
+
+  router.push({
+    path: `/view/dashboard/sider${pathMap[moduleType]}`,
+    query: {
+      key: route.query.key,
+      sider_key: menuKey,
+      proj_key: route.query.proj_key
+    }
+  })
+}
+
+onMounted(() => {
+  setMenuList()
+  setActiveKey()
+})
+</script>
+
+<style scoped lang="less"></style>
