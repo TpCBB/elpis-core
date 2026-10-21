@@ -2,8 +2,8 @@ module.exports = (app) => {
   const BaseController = require('./base.js')(app)
   return class ProjectController extends BaseController {
     /**
-     * 根据proj_key 获取项目配置
-     * @param {object} ctx 上下文
+     * Get the project configuration by proj_key
+     * @param {object} ctx Koa context
      */
     async get(ctx) {
       const { proj_key: projKey } = ctx.request.query
@@ -18,7 +18,7 @@ module.exports = (app) => {
     }
 
     /**
-     * 获取当前 projectKey 对应模型下面的项目列表 如果无projectKey 则全部获取
+     * Get projects from the model associated with projectKey, or all projects if omitted
      *
      */
     async getList(ctx) {
@@ -27,7 +27,7 @@ module.exports = (app) => {
       const { project: projectService } = app.service
       const projectList = await projectService.getList({ projKey })
 
-      // 构造关键数据
+      // Select the essential fields
       const dtoProjectList = projectList.map((item) => {
         const { modelKey, key, name, desc, homePage } = item
         return { modelKey, key, name, desc, homePage }
@@ -36,32 +36,32 @@ module.exports = (app) => {
     }
 
     /**
-     * 返回模型项目的结构化数据
-     * @param {object} ctx 上下文
+     * Return structured model and project data
+     * @param {object} ctx Koa context
      */
     async getModelList(ctx) {
       const { project: projectService } = app.service
       const modelList = await projectService.getModelList(ctx)
 
-      // 构造返回结果, 只返回关键数据
+      // Build the response using only the essential fields
       const dtoModelList = modelList.reduce((preList, curItem) => {
         const { model, project } = curItem
-        // 构造model的关键数据
+        // Select the essential model fields
         const { key, name, desc } = model
         const dtoModel = { key, name, desc }
-        // 构造project的关键数据
+        // Select the essential project fields
         const dtoProject = Object.keys(project).reduce((preList, curItem) => {
           const { key, name, desc, homePage } = project[curItem]
           preList[curItem] = { key, name, desc, homePage }
           return preList
         }, {})
 
-        // 将model和project的关键数据合并
+        // Combine the model and project fields
         preList.push({
           model: dtoModel,
           project: dtoProject
         })
-        // 返回结果
+        // Return the result
         return preList
       }, [])
 

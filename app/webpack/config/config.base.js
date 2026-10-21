@@ -5,17 +5,17 @@ const { VueLoaderPlugin } = require('vue-loader')
 const webpack = require('webpack')
 const merge = require("webpack-merge");
 const fs = require('fs')
-// 动态构造 elpis-core 将entry和htmlWebpackPlugin配置化
+// Generate core entry points and HtmlWebpackPlugin instances
 const elpisPageEntries = {}
 const elpisHtmlWebpackPluginList = []
-// 获取  elpis-core  ./app/pages下所有的 pages 入口文件
+// Discover core page entry files under app/pages
 const elpisEntryList = path.resolve(__dirname, '../../pages/**/entry.*.js')
 handleEntry(elpisEntryList, elpisPageEntries, elpisHtmlWebpackPluginList)
 
-// 动态构造 业务 将entry和htmlWebpackPlugin配置化
+// Generate application entry points and HtmlWebpackPlugin instances
 const businessPageEntries = {}
 const businessHtmlWebpackPluginList = []
-// 获取  业务  ./app/pages下所有的 pages 入口文件
+// Discover application page entry files under app/pages
 const businessEntryList = path.resolve(process.cwd(), './app/pages/**/entry.*.js')
 handleEntry(businessEntryList, businessPageEntries, businessHtmlWebpackPluginList)
 
@@ -26,11 +26,11 @@ function handleEntry(entryList, pageEntries, htmlWebpackPluginList) {
 
     htmlWebpackPluginList.push(
       new HtmlWebpackPlugin({
-        // 产物 (最终模板) 输出路径
+        // Output path for the generated template
         filename: path.resolve(process.cwd(), './app/public/dist/', `${entryName}.tpl`),
-        // 指定要使用的模板文件
+        // Source template file
         template: path.resolve(__dirname, '../../view/entry.tpl'),
-        // 要注入的代码块
+        // Chunks to inject
         chunks: [entryName]
       })
     )
@@ -38,21 +38,21 @@ function handleEntry(entryList, pageEntries, htmlWebpackPluginList) {
 }
 
 
-// 业务 webpackconfig.js
+// Application webpack.config.js
 let businessWebpackConfig = {}
 try {
   businessWebpackConfig = require(path.resolve(process.cwd(), './app/webpack.config.js'))
 } catch (error) {}
 
 /**
- * webpack基础配置
+ * Base Webpack configuration
  */
 
 const webpackBaseConfig = merge.smart({
-  // 入口配置  (多入口SSR配置)
+  // Entry points for server-rendered page templates
   entry: Object.assign({}, elpisPageEntries, businessPageEntries),
 
-  // 模块解析配置 (决定了要加载解析哪些模块,以及用什么方式去加载解析)
+  // Module loading and transformation rules
   module: {
     rules: [
       {
@@ -64,7 +64,7 @@ const webpackBaseConfig = merge.smart({
       {
         test: /\.js$/,
         include: [
-          // 只对业务代码 进行 babel加快打包速度
+          // Limit Babel processing to application source to reduce build work
           path.resolve(__dirname, '../../pages'),
           path.resolve(process.cwd(), './app/pages'),
         ],
@@ -97,32 +97,32 @@ const webpackBaseConfig = merge.smart({
     ]
   },
 
-  //产物输出配置
+  //Output configuration
 
   output: {},
 
-  // 配置模块解析的具体行为(定义 webpack 在打包时, 如何找到并加载模块)
+  // Configure how Webpack resolves and loads modules
   resolve: {
     extensions: ['.js', '.vue', '.css', '.less'],
     alias: (()=>{
       const aliasMap = {}
 
-      // 确保这个路径不会报错
+      // Provide an empty fallback module for optional extensions
       const blankModulPath = path.resolve(__dirname, '../../webpack/libs/blank.js')
 
-      // 由 业务 dashboard 拓展的路由 
+      // Application dashboard route extensions
       const businessDashboardRouterConfig = path.resolve(process.cwd(), './app/pages/dashboard/router.js')
       aliasMap['$businessDashboardRouterConfig'] = fs.existsSync(businessDashboardRouterConfig) ? businessDashboardRouterConfig : blankModulPath
 
-      // 由 业务 schema-view components 拓展的组件 
+      // Application schema-view component extensions
       const  businessComponentsConfig = path.resolve(process.cwd(), './app/pages/dashboard/complex-view/schema-view/components/component-config.js')
       aliasMap['$businessComponentsConfig'] = fs.existsSync(businessComponentsConfig) ? businessComponentsConfig : blankModulPath
 
-      // 由 业务 schema-form components 拓展的组件 
+      // Application schema-form control extensions
       const  $businessFormItemConfig = path.resolve(process.cwd(), './app/pages/widgets/schema-form/form-item-config.js')
       aliasMap['$businessFormItemConfig'] = fs.existsSync($businessFormItemConfig) ? $businessFormItemConfig : blankModulPath
 
-      // 由 业务 schema-search-bar components 拓展的组件 
+      // Application schema-search-bar control extensions
       const  $businessSearchItemConfig = path.resolve(process.cwd(), './app/pages/widgets/schema-search-bar/search-item-config.js')
       aliasMap['$businessSearchItemConfig'] = fs.existsSync($businessSearchItemConfig) ? $businessSearchItemConfig : blankModulPath
 
@@ -152,62 +152,62 @@ const webpackBaseConfig = merge.smart({
     })()
   },
 
-  // 插件配置
+  // Plugin configuration
   plugins: [
-    // 处理 .vue 文件  这个插件是必须的
-    // 它的职能是将你定义过的其他规则赋值并应用到  .vue 文件里
-    // 例如 如果有一条匹配规则 /\.js$/ 的规则, 那么他会应用到 .vue文件中的<script>板块中
+    // Required plugin for processing .vue files
+    // Apply the configured loader rules to Vue single-file components
+    // For example, JavaScript rules also apply to the script blocks in .vue files
     new VueLoaderPlugin(),
-    // 把第三方库 暴露到 window context下
+    // Provide third-party libraries as module identifiers
     new webpack.ProvidePlugin({
       Vue: 'vue',
       axios: 'axios',
       _: 'lodash'
     }),
-    // 定义全局常量
+    // Define compile-time constants
     new webpack.DefinePlugin({
-      __VUE_OPTIONS_API__: true, //支持vue解析optionsApi
-      __VUE_PROD_DEVTOOLS__: false, // 禁用 vue测试工具
-      __VUE_PROD_HYDRATION_MISMATCH_DETAILS__: 'false' // 禁止生产环境显示  "水合" 信息
+      __VUE_OPTIONS_API__: true, //Enable the Vue Options API
+      __VUE_PROD_DEVTOOLS__: false, // Disable Vue production devtools
+      __VUE_PROD_HYDRATION_MISMATCH_DETAILS__: 'false' // Disable detailed hydration mismatch messages in production
     }),
-    // 最终渲染页面模板
+    // Generate the final page templates
     ...elpisHtmlWebpackPluginList,
     ...businessHtmlWebpackPluginList
   ],
 
-  // 配置打包输出优化 (配置代码分割, 模块合并, 缓存, TreeShaking, 压缩等优化策略)
+  // Optimize output with code splitting, caching, tree shaking, and minification
   optimization: {
     /**
-     * 分包策略
-     * 1 vender: node_modules 第三方库, 基本不会改动, 除非升级
-     * 2 common: 业务公共代码, 改动较少
-     * 3 entry.{page}: 页面entry里的业务组件代码, 会经常改动
+     * Chunk splitting strategy
+     * 1 vender: third-party dependencies, typically changed only during upgrades
+     * 2 common: shared application code that changes less frequently
+     * 3 entry.{page}: page-specific application code that changes frequently
      */
     splitChunks: {
-      chunks: 'all', // 对同步和异步代码进行分割
-      maxAsyncRequests: 10, // 最大异步请求数
-      maxInitialRequests: 10, // 最大初始请求数
-      // 缓存组
+      chunks: 'all', // Split both synchronous and asynchronous modules
+      maxAsyncRequests: 10, // Maximum concurrent asynchronous requests
+      maxInitialRequests: 10, // Maximum concurrent initial requests
+      // Cache groups
       cacheGroups: {
         vender: {
-          test: /[\\/]node_modules[\\/]/, // 匹配node_modules目录
-          name: 'vender', // 约定 第三方库 包名
-          priority: 20, // 优先级 越大越先分割
-          enforce: true, // 强制执行
-          reuseExistingChunk: true // [关键] 复用已存在的chunk
+          test: /[\\/]node_modules[\\/]/, // Match node_modules
+          name: 'vender', // Third-party dependency chunk name
+          priority: 20, // Higher-priority groups are processed first
+          enforce: true, // Enforce this cache group
+          reuseExistingChunk: true // Reuse an existing chunk when possible
         },
         common: {
-          test: /[\\/]common|widgets[\\/]/, // 匹配common和widgets目录
+          test: /[\\/]common|widgets[\\/]/, // Match common and widgets directories
           name: 'common',
-          minChunks: 2, // 最小复用次数 就被打成一个包
-          minSize: 1, // 最小被分割文件大小 (1bytes)
-          reuseExistingChunk: true, // 复用已存在的chunk
-          priority: 10 // 优先级
+          minChunks: 2, // Minimum number of modules sharing a chunk
+          minSize: 1, // Minimum chunk size in bytes
+          reuseExistingChunk: true, // Reuse existing chunks
+          priority: 10 // Priority
         }
       }
     },
 
-    // 将 webpack 运行时生成的代码 打包到 runtime 包中
+    // Extract Webpack runtime code into a separate chunk
     runtimeChunk: true
   }
 }, businessWebpackConfig)

@@ -1,8 +1,8 @@
 module.exports = (app) =>
   class BaseController {
     /**
-     * controller 基类
-     * 统一收拢 controller 相关公共方法
+     * Controller base class
+     * Shared controller methods
      */
     constructor() {
       this.app = app
@@ -10,10 +10,10 @@ module.exports = (app) =>
       this.controller = app.controller
     }
     /**
-     * 成功返回
-     * @param {object} ctx 上下文
-     * @param {object} data 数据
-     * @param {object} metadata 额外信息
+     * Send a successful response
+     * @param {object} ctx Koa context
+     * @param {object} data Response data
+     * @param {object} metadata Additional metadata
      */
     success(ctx, data = {}, metadata = {}) {
       ctx.status = 200
@@ -24,13 +24,13 @@ module.exports = (app) =>
       }
     }
     /**
-     * 失败返回
-     * @param {object} ctx 上下文
-     * @param {string} message 错误信息
-     * @param {number} code 错误码
+     * Send an error response
+     * @param {object} ctx Koa context
+     * @param {string} message Error message
+     * @param {number} code Error code
      */
     fail(ctx, message, code) {
-      // http 状态码必须是一个有效的3位数字
+      // HTTP status codes must be valid three-digit numbers
       ctx.status = 200
       ctx.body = {
         success: false,

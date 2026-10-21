@@ -1,12 +1,12 @@
 const Ajv = require("ajv");
 const ajv = new Ajv();
 /**
- * 参数校验
+ * Request parameter validation
  */
 module.exports = (app) => {
   return async (ctx, next) => {
     const $schema = "http://json-schema.org/draft-07/schema#";
-    // 只对 api 做参数校验
+    // Validate parameters only for API requests
     if (ctx.path.indexOf("/api") < 0) {
       return await next();
     }
@@ -26,7 +26,7 @@ module.exports = (app) => {
 
     let valid = true;
 
-    // 校验器
+    // Schema validator
     let validate;
 
     if (valid && body && schema.body) {

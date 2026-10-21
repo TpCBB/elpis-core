@@ -1,46 +1,46 @@
 const merge = require("webpack-merge");
 const path = require("path");
 const webpack = require("webpack");
-// 基础配置
+// Base configuration
 const baseConfig = require("./config.base");
-// dev-server配置
+// Development server configuration
 const DEV_SERVER_CONFIG = {
-  HOST: "127.0.0.1", // 主机地址
-  PORT: 9002, // 端口号
-  HOT: true, // 热更新
-  HMR_PATH: "__webpack_hrm", // 官方规定
+  HOST: "127.0.0.1", // Host address
+  PORT: 9002, // Port number
+  HOT: true, // Enable hot updates
+  HMR_PATH: "__webpack_hrm", // HMR endpoint path
   TIMEOUT: 20000,
 };
 
-// 开发阶段 entry 配置需要加入 hmr
+// Add the HMR client to development entry points
 Object.keys(baseConfig.entry).forEach((key) => {
   if(key !== 'vendor') {
   baseConfig.entry[key] = [
-      // 主文件入口
+      // Main entry point
       baseConfig.entry[key],
-      // hmr 更新入口 官方指定 hmr 路径
+      // HMR client entry with the configured middleware endpoint
       `${require.resolve('webpack-hot-middleware/client')}?path=http://${DEV_SERVER_CONFIG.HOST}:${DEV_SERVER_CONFIG.PORT}/${DEV_SERVER_CONFIG.HMR_PATH}?timeout=${DEV_SERVER_CONFIG.TIMEOUT}&reload=true}`,
     ]
   }
 });
 
-// 开发模式配置
+// Development configuration
 const webpackDevConfig = merge(baseConfig, {
-  mode: "development", // 指定开发模式
-  // 开发模式下开启 sourceMap, 呈现代码的映射关系, 方便调试 
+  mode: "development", // Enable development mode
+  // Enable source maps for development debugging
   devtool: "eval-source-map",
   output: {
     filename: "js/[name]_[chunkhash:8].bundle.js",
-    path: path.resolve(process.cwd(), "./app/public/dist/dev"), // 输出文件路径
-    publicPath: `http://${DEV_SERVER_CONFIG.HOST}:${DEV_SERVER_CONFIG.PORT}/public/dist/dev`, // 指定资源的公共访问路径
-    globalObject: "this", // 指定全局对象
+    path: path.resolve(process.cwd(), "./app/public/dist/dev"), // Output directory
+    publicPath: `http://${DEV_SERVER_CONFIG.HOST}:${DEV_SERVER_CONFIG.PORT}/public/dist/dev`, // Public URL for generated assets
+    globalObject: "this", // Global object
   },
 
-  // 开发阶段插件
+  // Development plugins
   plugins: [
-    // 实现热更新
-    // 允许在运用程序 运行时 替换模块
-    // 提升开发效率, 减少页面刷新
+    // Enable hot module replacement
+    // Replace modules while the application is running
+    // Reduce full-page reloads during development
     new webpack.HotModuleReplacementPlugin({
       multiStep: false,
     }),

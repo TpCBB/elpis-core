@@ -1,18 +1,18 @@
 module.exports = (app) => {
   return {
-    // 判断是否本地环境
+    // Check whether the environment is local
     isLocal() {
       return process.env.NODE_ENV === "local";
     },
-    // 判断是否测试环境
+    // Check whether the environment is beta
     isBeta() {
       return process.env.NODE_ENV === "beta";
     },
-    // 判断是否生产环境
+    // Check whether the environment is production
     isProd() {
       return process.env.NODE_ENV === "production";
     },
-    // 获取当前环境
+    // Get the current environment
     get() {
       return process.env.NODE_ENV ?? "local";
     },

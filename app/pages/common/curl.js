@@ -1,20 +1,20 @@
 import { ElMessage } from "element-plus";
 const md5 = require("md5");
 /**
- * 前端封装 curl 方法
+ * Frontend HTTP request wrapper
  */
 
 const curl = ({
-  url, // 请求地址
-  method = "POST", // 请求方法
-  data = {}, // 请求体 post body
-  query = {}, // 请求参数 get url query
-  headers = {}, // 请求头
-  responseType = "json", // 响应类型
-  timeout = 60000, // 请求超时时间
-  errorMessage = "网络异常", // 错误处理
+  url, // Request URL
+  method = "POST", // HTTP method
+  data = {}, // Request body
+  query = {}, // URL query parameters
+  headers = {}, // Request headers
+  responseType = "json", // Response type
+  timeout = 60000, // Request timeout in milliseconds
+  errorMessage = "网络异常", // Error handling
 }) => {
-  //  加密
+  //  Generate the request signature
   const signKey = "qwertyuiop1234567890";
   const st = Date.now();
   const sign = md5(`${signKey}${st}`);
@@ -29,7 +29,7 @@ const curl = ({
     dtoHeaders.proj_key = window.projKey
   }
 
-  //   axios配置
+  //   Axios configuration
   const axiosSetting = {
     url,
     method,
@@ -40,15 +40,15 @@ const curl = ({
     timeout,
   };
 
-  //   axios请求
+  //   Send the Axios request
   return axios
     .request(axiosSetting)
     .then((response) => {
       const resData = response.data || {};
-      //    后端返回格式
+      //    Backend response format
       const { success } = resData;
 
-      //   失败处理
+      //   Handle failures
       if (!success) {
         const { code, message } = resData;
         if (code == 442) {
@@ -66,7 +66,7 @@ const curl = ({
         return Promise.resolve({ success, code, message });
       }
 
-      //   成功处理
+      //   Handle success
       const { data, metadata } = resData;
       return Promise.resolve({ success, data, metadata });
     })

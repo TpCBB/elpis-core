@@ -1,11 +1,11 @@
 /**
- * 处理项目相关内容
+ * Handle project-specific requests
  * @param {*} app
  * @returns
  */
 module.exports = (app) => {
   return async (ctx, next) => {
-    // 只处理开头为 /api/proj 的请求
+    // Handle only requests beginning with /api/proj
     if (ctx.path.indexOf('api/proj/') < 0) {
       return await next()
     }

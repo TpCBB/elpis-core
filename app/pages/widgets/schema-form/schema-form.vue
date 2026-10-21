@@ -23,24 +23,24 @@ provide('ajv', ajv)
 const props = defineProps({
   /**
      * schema: {
-          // 数据源结构
+          // Data structure
           type: 'object',
           properties: {
             key: {
-              ...schema, // 标准的schema字段
-              type: '', // 字段类型
-              label: '', // 字段中文名
-              // 字段在不同动态 component 中的相关配置, 前缀对应 componentConfig 中键值
-              // 例如: componentConfig.createForm 对应 createFormOption
-              // 字段在 createForm 中的相关配置
+              ...schema, // Standard JSON Schema fields
+              type: '', // Field type
+              label: '', // Field label
+              // Field options for dynamic components; prefixes match keys in componentConfig
+              // For example, componentConfig.createForm uses createFormOption
+              // Field options for createForm
               option: {
-                ...eleComponentConfig, // 标准的 el-component 配置, 可以兼容原 element-ui 的属性
-                comType: '', // 控件类型 input/select/input-number
-                visible: 'true', // 是否显示 默认为 true
-                disabled: 'false', // 是否禁用 默认为 false
-                required: 'false', // 是否必填 默认为 false
-                // comType 为 select 的时候
-                enumList: [] // 枚举列表
+                ...eleComponentConfig, // Element component props, including compatible Element UI props
+                comType: '', // Control type: input/select/inputNumber/dateRange
+                visible: 'true', // Visibility; defaults to true
+                disabled: 'false', // Disabled state; defaults to false
+                required: 'false', // Required state; defaults to false
+                // When comType is select
+                enumList: [] // Available enum options
               },
             },
           },
@@ -51,7 +51,7 @@ const props = defineProps({
     required: true
   },
   /**
-   * 表单数据
+   * Form data
    */
   model: {
     type: Object,
@@ -63,7 +63,7 @@ const { schema } = toRefs(props)
 
 const formComList = ref([])
 
-// 表单校验
+// Form validation
 const validate = () => {
   return formComList.value.every((component) => {
     const result = component.validate()
@@ -71,7 +71,7 @@ const validate = () => {
   })
 }
 
-// 获取表单值
+// Get the form value
 const getValue = () => {
   return formComList.value.reduce((dtoObj, component) => {
     return {

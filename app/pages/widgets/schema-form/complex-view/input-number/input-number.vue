@@ -82,11 +82,11 @@ watch(
     deep: true
   }
 )
-// 初始化数据
+// Initialize the data
 onMounted(() => {
   initData()
 })
-// schema 标准 通过 ajv 校验表单
+// Validate the form against JSON Schema using Ajv
 const validate = () => {
   validTips.value = null
   const { type } = schema
@@ -116,7 +116,7 @@ const validate = () => {
   return true
 }
 
-// 获取表单值
+// Get the form value
 const getValue = () => {
   return dtoValue.value !== undefined
     ? {

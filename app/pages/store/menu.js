@@ -2,19 +2,19 @@ import { defineStore } from 'pinia'
 import { ref } from 'vue'
 
 export const useMenuStore = defineStore('menu', () => {
-  // 菜单列表
+  // Menu items
   const menuList = ref([])
 
-  // 设置菜单列表
+  // Set the menu items
   const setMenuList = (list) => {
     menuList.value = list
   }
 
   /**
-   * 根据key 和 value 获取菜单
-   * @param {key} param0  搜索的值
-   * @param {value} param1  搜索的值
-   * @param {mList} param2 要搜索的菜单列表
+   * Find a menu item by its property key and value
+   * @param {key} param0 Property key to match
+   * @param {value} param1 Property value to match
+   * @param {mList} param2 Menu list to search
    */
   const findMenuItem = ({ key, value }, mList = menuList.value) => {
     for (let i = 0; i < mList.length; i++) {
@@ -46,8 +46,8 @@ export const useMenuStore = defineStore('menu', () => {
   }
 
   /**
-   * 找出菜单列表的第一个
-   * @param {mList} param0 菜单列表
+   * Find the first menu item
+   * @param {mList} param0 Menu list
    */
   const findFirstMenuItem = (mList = menuList.value) => {
     if (!mList || !mList[0]) {

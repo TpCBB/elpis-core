@@ -1,16 +1,16 @@
-<!-- 通用的头部组件 具体的容器 -->
+<!-- Shared header container -->
 <template>
   <el-container class="header-container">
     <el-header class="header">
       <el-row type="flex" align="middle" class="header-row">
-        <!-- 左上方 title -->
+        <!-- Title in the upper-left corner -->
         <el-row type="flex" align="middle" class="title-panel">
           <img src="./asserts/logo.png" class="logo" />
           <el-row>{{ title }}</el-row>
         </el-row>
-        <!-- 插槽 菜单区域 -->
+        <!-- Menu slot -->
         <slot name="menu-content"></slot>
-        <!-- 右上方 信息展示 -->
+        <!-- Information in the upper-right corner -->
         <el-row type="flex" align="middle" justify="end" class="setting-panel">
           <slot name="setting-content"></slot>
           <img src="./asserts/avatar.png" alt="" class="avatar" />
@@ -24,7 +24,7 @@
       </el-row>
     </el-header>
     <el-main class="main-container">
-      <!-- 核心内容-->
+      <!-- Main content-->
       <slot name="main-content" />
     </el-main>
   </el-container>

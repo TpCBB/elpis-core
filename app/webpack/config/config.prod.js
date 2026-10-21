@@ -1,6 +1,6 @@
 const merge = require("webpack-merge");
 const path = require("path");
-const Happypack = require("happypack"); // 多线程打包
+const Happypack = require("happypack"); // Parallel builds
 const os = require("os");
 const webpackBaseConfig = require("./config.base");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
@@ -9,7 +9,7 @@ const CleanWebpackPlugin = require("clean-webpack-plugin");
 const TerserPlugin = require("terser-webpack-plugin");
 const HtmlwebpackInjectAttributesPlugin = require("html-webpack-inject-attributes-plugin");
 
-// 多线程 build 设置
+// Worker pool configuration
 const happypackCommonConfig = {
   debug: false,
   threadPool: Happypack.ThreadPool({
@@ -17,32 +17,32 @@ const happypackCommonConfig = {
   }),
 };
 
-// 生产环境配置
+// Production configuration
 let webpackProdConfig = merge.smart(webpackBaseConfig, {
-  // 指定生产环境
+  // Enable production mode
   mode: "production",
-  // 生产环境的output
+  // Production output
   output: {
-    // 定义打包后的文件名格式：
-    // [name] - 会被入口名称替换（如 entry.page1, entry.page2）
-    // [chunkhash:8] - 根据文件内容生成的8位hash值，用于缓存控制
+    // Generated filename format:
+    // [name] is replaced with the entry name, such as entry.page1 or entry.page2
+    // [chunkhash:8] is an eight-character chunk hash used for cache invalidation
     filename: "js/[name]_[chunkhash:8].bundle.js",
 
-    // 打包文件的输出路径，使用path.join确保跨平台路径正确
-    // process.cwd()获取当前工作目录，然后拼接后续路径
+    // Use path.join to construct a platform-compatible output path
+    // Resolve the output directory relative to process.cwd()
     path: path.join(process.cwd(), "./app/public/dist/prod/"),
 
-    // 指定资源的公共访问路径
-    // 这将作为生产环境下静态资源的基础URL
+    // Public URL for generated assets
+    // Base URL for static assets in production
     publicPath: "/dist/prod/",
 
-    // 配置跨域资源加载策略
-    // anonymous表示不发送凭据（cookies等）
-    // 这对于CDN加载很有用，可以避免不必要的cookie传输
+    // Cross-origin asset loading policy
+    // anonymous uses anonymous CORS mode for cross-origin requests
+    // Avoid sending credentials with cross-origin CDN requests
     crossOriginLoading: "anonymous",
   },
 
-  // 模块
+  // Module rules
   module: {
     rules: [
       {
@@ -56,26 +56,26 @@ let webpackProdConfig = merge.smart(webpackBaseConfig, {
       },
     ],
   },
-  //   webpack 不会有大量 hints 信息, 默认为warning
+  //   Report Webpack performance hints as warnings
   performance: {
     hints: "warning",
   },
-  //   插件
+  //   Plugins
   plugins: [
-    // 每次 build 前, 清空 dist 目录
+    // Clean the dist directory before each build
     new CleanWebpackPlugin(["public/dist"], {
       root: path.resolve(process.cwd(), "./app/"),
       exclude: [],
       verbose: true,
       dry: false,
     }),
-    // 优化压缩 css 的公共部分, 有效利用资源
+    // Minify CSS
     new CssMinimizerPlugin(),
-    // 提取css的公共部分, 有效利用缓存
+    // Extract CSS into separate files for caching
     new MiniCssExtractPlugin({
       chunkFilename: "css/[name]_[contenthash:8].css",
     }),
-    // 多线程打包 JS 加快打包速度
+    // Process JavaScript with a worker pool
     new Happypack({
       ...happypackCommonConfig,
       id: "js",
@@ -86,7 +86,7 @@ let webpackProdConfig = merge.smart(webpackBaseConfig, {
         })}`,
       ],
     }),
-    // 多线程打包 css 加快打包速度
+    // Process CSS with a worker pool
     new Happypack({
       ...happypackCommonConfig,
       id: "css",
@@ -99,23 +99,23 @@ let webpackProdConfig = merge.smart(webpackBaseConfig, {
         },
       ],
     }),
-    // 浏览器在请求资源时不发送用户凭证
+    // Load cross-origin assets without credentials
     new HtmlwebpackInjectAttributesPlugin({
       crossorigin: "anonymous",
     }),
   ],
-  //  优化
+  //  Optimization
   optimization: {
-    // 使用 TerserWebpackPlugins 的并发和缓存, 提升压缩阶段的性能
-    // 清除console
+    // Use Terser workers and caching to improve minification performance
+    // Remove console calls
     minimize: true,
     minimizer: [
       new TerserPlugin({
-        cache: true, // 启用缓存加速构建过程
-        parallel: true, // 利用多核CPU加速构建
+        cache: true, // Cache minification results
+        parallel: true, // Use multiple CPU cores
         terserOptions: {
           compress: {
-            drop_console: true, // 清除console
+            drop_console: true, // Remove console calls
           },
         },
       }),

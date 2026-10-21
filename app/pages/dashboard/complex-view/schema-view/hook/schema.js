@@ -14,7 +14,7 @@ export const useSchema = function () {
   const searchConfig = ref()
   const components = ref({})
 
-  //   构造 SchemaConfig 相关配置, 输送给 schemaView 解析
+  //   Build SchemaConfig for schemaView to render
   const buildData = function () {
     const { key, sider_key: siderKey } = route.query
     const menuItem = menuStore.findMenuItem({
@@ -24,7 +24,7 @@ export const useSchema = function () {
     if (menuItem && menuItem.schemaConfig) {
       const { schemaConfig: sConfig } = menuItem
 
-      const configSchema = _.cloneDeep(sConfig.schema) // 深拷贝 schemaConfig
+      const configSchema = _.cloneDeep(sConfig.schema) // Deep-clone schemaConfig
 
       api.value = sConfig?.api ?? ''
 
@@ -34,13 +34,13 @@ export const useSchema = function () {
       searchConfig.value = undefined
 
       nextTick(() => {
-        // 构造 tableSchema 和tableConfig
+        // Build tableSchema and tableConfig
         tableSchema.value = buidlDtoSchema(configSchema, 'table')
         tableConfig.value = sConfig.schema?.tableConfig
 
-        // 构造 searchSchema 和 searchConfig
+        // Build searchSchema and searchConfig
         const dtoSchema = buidlDtoSchema(configSchema, 'search')
-        // 如果页面跳转的时候 路由带有值 则将值设置为默认值
+        // Use route query values as defaults when navigating to the page
         for (const key in dtoSchema.properties) {
           if (route.query[key] !== undefined) {
             dtoSchema.properties[key].option.default = route.query[key]
@@ -50,7 +50,7 @@ export const useSchema = function () {
         searchSchema.value = dtoSchema
         searchConfig.value = sConfig.schema?.searchConfig
 
-        // 构造 components : { comKey: { schema:{}, config: {} } }
+        // Build components: { comKey: { schema: {}, config: {} } }
         const { componentConfig } = sConfig.schema
         if (componentConfig && Object.keys(componentConfig).length > 0) {
           const dtoComponents = {}
@@ -66,7 +66,7 @@ export const useSchema = function () {
     }
   }
 
-  // 通用构建 schema 配置 (清除无效配置)
+  // Build a component-specific schema and remove unrelated options
   const buidlDtoSchema = (_schema, type) => {
     if (!_schema?.properties) {
       return
@@ -76,22 +76,22 @@ export const useSchema = function () {
       properties: {}
     }
 
-    //  提取 schema 中的有效配置
+    //  Extract the relevant schema configuration
     for (let key in _schema.properties) {
       const props = _schema.properties[key]
 
       if (props[`${type}Option`]) {
         let dtoProps = {}
-        // 提取 props 中 除了 Option 的有效配置
+        // Copy property definitions without component-specific Option fields
         for (let pKey in props) {
           if (pKey.indexOf('Option') < 0) {
             dtoProps[pKey] = props[pKey]
           }
         }
-        // 处理 type Option
+        // Apply the component-specific options
         dtoProps = Object.assign({}, dtoProps, { option: props[`${type}Option`] })
         
-        // 处理 required 配置
+        // Apply required-field rules
         const { required } = _schema
         if (required && required.find((pk) => key === pk)) {
           dtoProps.option.required = true

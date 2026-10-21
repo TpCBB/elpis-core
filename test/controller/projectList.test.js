@@ -11,9 +11,9 @@ describe('project controller', function () {
   let request
   let modelList
   let projectList = []
-  it('启动服务', async () => {
+  it('starts the server', async () => {
     const app = await elpisCore.start()
-    // 拿到完整的模型列表, 才可以在接口中返回的数据做对比
+    // Load the full model list for comparison with API responses
     modelList = require('../../model/index.js')(app)
     modelList.forEach((item) => {
       const { project } = item
@@ -25,7 +25,7 @@ describe('project controller', function () {
     request = supertest(app.listen())
   })
 
-  // /api/project/getList 没有传 projKey 参数
+  // /api/project/getList without projKey
   it('GET /api/project/getList  without projKey', async () => {
     const tmpRequest = request.get('/api/project/getList')
     tmpRequest.set('s_t', st)
@@ -33,7 +33,7 @@ describe('project controller', function () {
     const res = await tmpRequest
     assert(res.body.success === true)
     const data = res.body.data
-    assert(data.length === projectList.length) // 没有传 projKey 参数, 返回所有的项目列表
+    assert(data.length === projectList.length) // Return all projects when projKey is omitted
 
     for (let i = 0; i < data.length; i++) {
       const item = data[i]
@@ -45,7 +45,7 @@ describe('project controller', function () {
     }
   })
 
-  // /api/project/getList 传 projKey 参数
+  // /api/project/getList with projKey
   it('GET /api/project/getList  with projKey', async () => {
     const { key: projKey } = projectList[Math.floor(Math.random() * projectList.length)]
     const { modelKey } = projectList.find((item) => item.key === projKey)
@@ -58,7 +58,7 @@ describe('project controller', function () {
     const data = res.body.data
     assert(data.length > 0)
 
-    assert(projectList.filter((item) => item.modelKey === modelKey).length === data.length) // 判断传了参数是否 和 相同模型下 返回的数据一样的长度
+    assert(projectList.filter((item) => item.modelKey === modelKey).length === data.length) // Verify that the returned count matches the projects in the same model
     for (let i = 0; i < data.length; i++) {
       const item = data[i]
       assert(item.modelKey)
@@ -115,7 +115,7 @@ describe('project controller', function () {
     menu.forEach((menuItem) => {
       checkMenuItem(menuItem)
     })
-    // 校验 menu 菜单
+    // Validate menu items
     function checkMenuItem(menuItem) {
       console.log(`/api/project with projectKey checkMenuItem -> menuItem`,menuItem.key)
       assert(menuItem.key)
@@ -134,7 +134,7 @@ describe('project controller', function () {
         checkModuleItem(menuItem)
       }
     }
-    // 校验 module 模块
+    // Validate module items
     function checkModuleItem(menuItem) {
       const { moduleType } = menuItem
       assert(moduleType)

@@ -1,8 +1,8 @@
 const log4js = require("log4js");
 
 /**
- * 日志工具
- * 外部调用 app.logger.info app.logger.error
+ * Logging utility
+ * Usage: app.logger.info and app.logger.error
  *
  */
 
@@ -10,16 +10,16 @@ module.exports = (app) => {
   let logger;
 
   if (app.env.isLocal()) {
-    // 如果是本地就直接使用console
+    // Use console logging in the local environment
     logger = console;
   } else {
-    // 如果是生产环境就使用log4js, 日志会落盘
+    // Use log4js to write logs to disk outside the local environment
     log4js.configure({
       appenders: {
         console: {
           type: "console",
         },
-        // 日志文件切分
+        // Rotate log files
         dateFile: {
           type: "dateFile",
           filename: "./logs/application.log",

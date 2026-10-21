@@ -3,31 +3,31 @@ const { sep } = require('path')
 
 /**
  * config loader
- * @param {object} app koa实例
+ * @param {object} app Koa application
  *
- * 配置区分 本地/测试/生产 通过 env 环境读取不同的文件配置 env.config
- * 通过env.config 覆盖 default.config 加载到 app.config 上
+ * Load environment-specific configuration for local, beta, or production
+ * Override default configuration with environment settings and assign the result to app.config
  *
- * 项目根目录yourproject/config/
+ * Project configuration directory: yourproject/config/
  *
- * 目录下对应的 config 配置
- * 默认配置: config/config.default.js
- * 本地配置: config/config.local.js
- * 测试配置: config/config.beta.js
- * 生产配置: config/config.prod.js
+ * Configuration files in this directory
+ * Default configuration: config/config.default.js
+ * Local configuration: config/config.local.js
+ * Beta configuration: config/config.beta.js
+ * Production configuration: config/config.prod.js
  *
  */
 
 module.exports = (app) => {
-  // 获取 default.config
+  // Read the default configuration
   let defaultConfig = {}
-  // 获取 default.config
+  // Read the default configuration
 
-  // 获取 核心中 config 目录
+  // Read the core configuration directory
   const ElpisConfigPath = path.resolve(__dirname, `..${sep}..${sep}config`)
   defaultConfig = require(path.resolve(ElpisConfigPath, `.${sep}config.default.js`))
 
-  // 获取 业务中 config 目录
+  // Read the application configuration directory
   const BussinessConfigPath = path.resolve(process.cwd(), `.${sep}config`)
 
   try {
@@ -39,7 +39,7 @@ module.exports = (app) => {
     console.log(`[exception] config.default.js not found`)
   }
 
-  // 根据环境 获取 env.config
+  // Read the configuration for the current environment
   let envConfig = {}
   try {
     if (app.env.isLocal()) {
@@ -52,6 +52,6 @@ module.exports = (app) => {
   } catch (error) {
     console.log(`[exception] config.${app.env.get()}.js not found`)
   }
-  // 合并 default.config 和 env.config 到 app.config 上
+  // Merge default and environment configuration into app.config
   app.config = Object.assign({}, defaultConfig, envConfig)
 }

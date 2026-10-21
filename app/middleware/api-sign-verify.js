@@ -1,10 +1,10 @@
 const md5 = require("md5");
 /**
- * API 签名合法性校验
+ * API signature validation
  */
 module.exports = (app) => {
   return async (ctx, next) => {
-    // 只对 api 做签名校验
+    // Validate signatures only for API requests
     if (ctx.path.indexOf("/api") < 0) {
       return await next();
     }
@@ -17,7 +17,7 @@ module.exports = (app) => {
     app.logger.info(`${st}--${sSign}`);
     app.logger.info(`[${method}${path}] signature:${signature}`);
 
-    // 签名合法性校验 5分钟过期
+    // Validate the signature and enforce a five-minute expiration window
     if (
       !st ||
       !sSign ||

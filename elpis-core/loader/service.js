@@ -1,69 +1,69 @@
 const path = require('path')
 const { sep } = require('path')
-const glob = require('glob') // 读取目录下的所有文件
+const glob = require('glob') // Discover files in the directory
 /**
  * service loader
- * @param {object} app  Koa 实例
+ * @param {object} app Koa application
  *
- * 加载所有文件, 并注册到 Koa 实例上
- * 通过 'app.service.${目录}.${文件}' 访问
+ * Load modules and register them on the Koa application
+ * Access services through app.service.<directory>.<file>
  * app/service
  *    |
  *    |-- custom-module
  *            |
  *            |-- custom-service.js
  *
- * => app.service.customModule.customService 访问到文件
+ * Access the module as app.service.customModule.customService
  *      ↓
  * app.service = {
  *          customModule: {
- *              customService: require(文件地址)
+ *              customService: require(modulePath)
  *            }
  *      }
  *
  */
 module.exports = (app) => {
-  // 初始化 service 对象 最终要挂在到 app 实例上
+  // Initialize the service registry for the Koa application
   const service = {}
 
-  // 读取 核心中 app/service/**/**.js目录下的所有文件
+  // Discover core files under app/service
   const ElpisServicePath = path.resolve(__dirname, `..${sep}..${sep}app${sep}service`)
   const ElpisFileList = glob.sync(path.resolve(ElpisServicePath, `.${sep}**${sep}**.js`))
   loadService(app, ElpisFileList)
 
-  // 读取 业务中 app/service/**/**.js目录下的所有文件
+  // Discover application files under app/service
   const BussinessServicePath = path.resolve(app.businessDir, `.${sep}service`)
   const BussinessFileList = glob.sync(path.resolve(BussinessServicePath, `.${sep}**${sep}**.js`))
   loadService(app, BussinessFileList)
 
   function loadService(app, fileList) {
-    // 遍历所有文件目录,把内容加载到 app.service 上
+    // Load each file into app.service
     fileList.forEach((file) => {
-      // 提取文件名称
+      // Extract the file name
       let fileName = path.resolve(file)
 
-      // 截取路径 app/service/custom-module/custom-service.js => custom-module/custom-service
-      // 去掉 app/service/
+      // Extract the relative path: app/service/custom-module/custom-service.js => custom-module/custom-service
+      // Remove the app/service/ prefix
       fileName = fileName.substring(
         fileName.lastIndexOf(`service${sep}`) + `service${sep}`.length,
         fileName.lastIndexOf(`.js`)
       )
 
-      // 把文件名转换成驼峰命名  custom-module/custom-service => customModule/customService
+      // Convert path segments to camelCase: custom-module/custom-service => customModule/customService
       fileName = fileName.replace(/[_-][a-z]/gi, (s) => s.substring(1).toUpperCase())
 
-      // 把文件内容加载到 service 对象上
+      // Load the module into the service registry
       let fileNames = fileName.split(sep)
 
-      // [custom-module, custom-service] = > { customModule: { customService: require(文件地址) } }
+      // [custom-module, custom-service] => { customModule: { customService: require(modulePath) } }
       let temService = service
       for (let i = 0; i < fileNames.length; i++) {
         if (i == fileNames.length - 1) {
-          // 最终文件
-          const ServiceModule = require(path.resolve(file))(app) // service 是一个class
-          temService[fileNames[i]] = new ServiceModule() // 实例化
+          // Leaf module
+          const ServiceModule = require(path.resolve(file))(app) // The service module returns a class
+          temService[fileNames[i]] = new ServiceModule() // Create an instance
         } else {
-          // 文件夹
+          // Nested directory
           if (!temService[fileNames[i]]) {
             temService[fileNames[i]] = {}
           }
@@ -72,7 +72,7 @@ module.exports = (app) => {
       }
     })
 
-    // 把 service 对象挂在到 app 实例上
+    // Attach the service registry to the Koa application
     app.service = service
   }
 }

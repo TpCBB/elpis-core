@@ -20,7 +20,7 @@ const projectStore = useProjectStore()
 const menuStore = useMenuStore()
 const route = useRoute()
 const router = useRouter()
-// 请求 api/project/list 接口 并且 缓存到project-store
+// Fetch the project list and cache it in the project store
 async function getProjectList() {
   const res = await $curl({
     url: '/api/project/getList',
@@ -35,7 +35,7 @@ async function getProjectList() {
   }
   projectStore.setProjectList(res.data)
 }
-// 请求 api/project 接口 并且缓存到 menu-store
+// Fetch the project configuration and cache its menu in the menu store
 async function getProjectConfig() {
   const res = await $curl({
     url: '/api/project',
@@ -50,7 +50,7 @@ async function getProjectConfig() {
   menuStore.setMenuList(res.data.menu)
   projectName.value = res.data.name
 }
-// 点击菜单回调
+// Menu click handler
 const onMenuSelect = (menuItem) => {
   const { moduleType, key, customConfig } = menuItem
   if (key === route.query.key) {

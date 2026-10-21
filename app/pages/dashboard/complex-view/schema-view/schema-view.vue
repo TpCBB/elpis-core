@@ -47,7 +47,7 @@ const onReset = () => {
 const onLoad = (searchValObj) => {
   console.log(`output->onLoad`, searchValObj)
 }
-// table 时间映射
+// Table event mappings
 const EventHandlerMap = {
   ShowComponent: ShowComponent
 }
@@ -75,7 +75,7 @@ function ShowComponent({ btnConfig, rowData }) {
   }
   comRef.show(rowData)
 }
-// 组件事件
+// Component events
 const onComponentCommand = ({ event }) => {
   console.log(`output->onComponentCommand`, event)
 }

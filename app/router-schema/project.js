@@ -6,7 +6,7 @@ module.exports = {
         properties: {
           proj_key: {
             type: 'string',
-            description: '项目key'
+            description: 'Project key'
           }
         },
         required: ['proj_key']

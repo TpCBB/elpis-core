@@ -46,7 +46,7 @@ const setActiveKey = (key) => {
     value: route.query.sider_key
   })
 
-  //如果首次加载，则获取第一个菜单
+  //Select the first menu item on the initial load
   if (!siderMenuItem) {
     const hMenuItem = menuStore.findMenuItem({
       key: 'key',
@@ -54,7 +54,7 @@ const setActiveKey = (key) => {
     })
     if (hMenuItem && hMenuItem.siderConfig && hMenuItem.siderConfig.menu) {
       const siderMenuList = hMenuItem.siderConfig.menu
-      siderMenuItem = menuStore.findFirstMenuItem(siderMenuList) // 找出左侧菜单的第一个
+      siderMenuItem = menuStore.findFirstMenuItem(siderMenuList) // Find the first item in the sidebar menu
       if (siderMenuItem) {
         handleMenuSelect(siderMenuItem.key)
       }

@@ -8,7 +8,7 @@
       class="table"
     >
       <template v-for="(schemaItem, key) in schema.properties">
-        <!-- v-bind="schemaItem.option" 可以处理 el-table-column 的配置 -->
+        <!-- v-bind="schemaItem.option" passes props to el-table-column -->
         <el-table-column
           v-if="schemaItem.option.visible !== false"
           :key="key"
@@ -18,7 +18,7 @@
           v-bind="schemaItem.option"
         ></el-table-column>
       </template>
-      <!-- operationWidth 操作列宽度 -->
+      <!-- operationWidth sets the action column width -->
       <el-table-column v-if="buttons?.length > 0" label="操作" :fixed="'right'" :width="operationWidth">
         <template #default="scope">
           <el-button
@@ -52,20 +52,20 @@ import { ref, toRefs, onMounted, computed, watch, nextTick } from 'vue'
 import $curl from '$elpisCommon/curl'
 const props = defineProps({
   /**
-   * 表格配置
-   * 遵循 dashboard-module 的 schema 配置
+   * Table configuration
+   * Follows the dashboard module schema configuration
    * {
-        // 数据源结构
+        // Data structure
         type: 'object',
         properties: {
           key: {
-            ...schema, // 标准的schema字段
-            type: '', // 字段类型
-            label: '', // 字段中文名
-            // 字段在table中的配置
+            ...schema, // Standard JSON Schema fields
+            type: '', // Field type
+            label: '', // Field label
+            // Field options for the table
             option: {
-              ...elTableColumnConfig, // 标准的 el-table-column 配置
-              visible: true // 是否显示
+              ...elTableColumnConfig, // Standard el-table-column props
+              visible: true // Whether to display the column
             },
           }
         }
@@ -76,28 +76,28 @@ const props = defineProps({
     default: () => ({})
   },
   /**
-   * 表格数据源 api
+   * Table data API
    */
   api: {
     type: String,
     default: ''
   },
   /**
-   * api 请求参数, 请求api时候携带
+   * Parameters sent with the API request
    */
   apiParams: {
     type: Object,
     default: () => ({})
   },
   /**
-   * 表格按钮
-   * 遵循 dashboard-module 的 tableConfig 配置
+   * Table action buttons
+   * Follows the dashboard module tableConfig configuration
    * [
         {
-          label: '', //按钮中文名
-          eventKey: '', // 事件名称
-          eventOption: {}, // 按钮配置
-          ...elButtonConfig // 标准的 el-button 配置
+          label: '', // Button label
+          eventKey: '', // Event name
+          eventOption: {}, // Button action options
+          ...elButtonConfig // Standard el-button props
         },
         ...otherButtons
       ],
@@ -109,7 +109,7 @@ const props = defineProps({
 })
 const emit = defineEmits(['operation'])
 const { schema, api, apiParams, buttons } = toRefs(props)
-// 根据按钮数量计算操作列宽度
+// Calculate the action column width from the number of buttons
 const operationWidth = computed(() => {
   return buttons?.value?.length > 0
     ? buttons.value.reduce((pre, cur) => {
@@ -135,7 +135,7 @@ watch(
   },
   { deep: true }
 )
-// 避免频繁触发 fetchTableData
+// Debounce fetchTableData calls
 let timer = null
 const loadTableData = async (time = 500) => {
   clearTimeout(timer)
@@ -158,7 +158,7 @@ const fetchTableData = async () => {
   if (!api.value) return
 
   showLoading()
-  // 请求 table 数据
+  // Fetch table data
   const res = await $curl({
     method: 'get',
     url: `${api.value}/list`,
@@ -181,21 +181,21 @@ const fetchTableData = async () => {
   total.value = res.metadata.total
 }
 /**
- * 对后端返回的数据进行预处理
- * @param {Array} listData 列表数据
+ * Preprocess the data returned by the backend
+ * @param {Array} listData List data
  */
 const buildTableData = (listData) => {
   if (!schema.value?.properties) return listData
 
   return listData.map((rowData) => {
-    // 根据schema的配置，处理数据
+    // Process data according to the schema configuration
     for (const dKey in rowData) {
       const schemaItem = schema.value.properties[dKey]
-      // 处理 toFixed 配置
+      // Apply the toFixed option
       if (schemaItem?.option?.toFixed) {
         rowData[dKey] = rowData[dKey].toFixed && rowData[dKey].toFixed(schemaItem.option.toFixed)
       }
-      // 可以处理 schema 配置的 ...
+      // Extend processing for additional schema options here
     }
     return rowData
   })
@@ -207,7 +207,7 @@ const showLoading = () => {
 const hideLoading = () => {
   loading.value = false
 }
-// 低耦合, 只负责触发事件, 不负责处理事件
+// Emit events for the parent component to handle
 const operationHandler = ({ btnConfig, rowData }) => {
   emit('operation', { btnConfig, rowData })
 }

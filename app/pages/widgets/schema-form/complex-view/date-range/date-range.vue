@@ -71,11 +71,11 @@ watch(
     deep: true
   }
 )
-// 初始化数据
+// Initialize the data
 onMounted(() => {
   initData()
 })
-// schema 标准 通过 ajv 校验表单
+// Validate the form against JSON Schema using Ajv
 const validate = () => {
   validTips.value = null
   if (schema.option?.required && !dtoValue.value) {
@@ -83,9 +83,9 @@ const validate = () => {
     return false
   }
 
-  // 获取枚举值 根据 JSON-SCHEMA 标准 枚举值需要是字符串
+  // Read enum values; this control expects string values for JSON Schema validation
   if (dtoValue.value) {
-    // TODO: 根据 JSON-SCHEMA 标准 校验 date 值
+    // TODO: Validate date values against JSON Schema
     // const validateComplie = ajv.compile()
     // const valid = validateComplie(dtoValue.value)
     // console.log('output=--->valid', valid)
@@ -93,7 +93,7 @@ const validate = () => {
   return true
 }
 
-// 获取表单值
+// Get the form value
 const getValue = () => {
   return dtoValue.value !== undefined
     ? {

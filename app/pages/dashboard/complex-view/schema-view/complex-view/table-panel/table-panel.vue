@@ -56,7 +56,7 @@ function removeData({ btnConfig, rowData }) {
 
   const { params } = eventOption
   const rowValueKey = Object.keys(params)[0]
-  // TODO: 需要测试
+  // TODO: Test this behavior
   const rowKey = params[rowValueKey]
   let removeValue
   const removeValueList = rowKey.split('::')

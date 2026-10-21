@@ -3,8 +3,8 @@ module.exports = (app) => {
   const model = require('../../model/index')(app)
   return class ProjectService extends baseConfig {
     /**
-     * 根据 projKey 获取项目配置
-     * @param {string} projKey 项目key
+     * Get the project configuration by projKey
+     * @param {string} projKey Project key
      */
     getProjectConfig({ projKey }) {
       let projectConfig
@@ -16,13 +16,13 @@ module.exports = (app) => {
       return projectConfig
     }
     /**
-     * 获取统一模型下的项目列表,  如果无 projKey 则获取全部
+     * Get projects from the same model, or all projects if projKey is omitted
      *
      */
     async getList({ projKey }) {
       return model.reduce((preList, modelItem) => {
         const { project } = modelItem
-        // 如果有传 projket 则只返回对应的项目 否则返回全部
+        // Return projects from the matching model when projKey is provided; otherwise return all projects
         if (projKey && !project[projKey]) {
           return preList
         }
@@ -36,7 +36,7 @@ module.exports = (app) => {
     }
 
     /**
-     * 获取所有模型与项目结的构化数据
+     * Get structured data for all models and projects
      *
      */
     async getModelList() {

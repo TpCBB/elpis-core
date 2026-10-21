@@ -2,10 +2,10 @@ import { defineStore } from 'pinia'
 import { ref } from 'vue'
 
 export const useProjectStore = defineStore('project', () => {
-  // 项目列表
+  // Project list
   const projectList = ref([])
 
-  // 设置项目列表
+  // Set the project list
   const setProjectList = (list) => {
     projectList.value = list
   }

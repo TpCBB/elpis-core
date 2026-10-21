@@ -13,11 +13,11 @@ module.exports = () => {
     process.stdout.write(
       `${
         stats.toString({
-          colors: true, // 在控制台输出彩色
-          modules: false, // 不显示模块信息
-          children: false, // 不显示子级信息
-          chunks: false, // 不显示代码块信息
-          chunkModules: true, // 显示代码块模块信息
+          colors: true, // Use colored console output
+          modules: false, // Hide module details
+          children: false, // Hide child compilation details
+          chunks: false, // Hide chunk details
+          chunkModules: true, // Show chunk module details
         }) + "\n"
       }`
     );

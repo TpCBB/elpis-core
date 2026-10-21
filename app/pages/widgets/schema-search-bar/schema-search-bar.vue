@@ -1,8 +1,8 @@
 <template>
   <el-form v-if="schema && schema.properties" :inline="true" class="schema-search-bar">
-    <!-- 动态组件 -->
+    <!-- Dynamic components -->
     <el-form-item v-for="(schemaItem, key) in schema.properties" :key="key" :label="schemaItem.label">
-      <!-- 展示子组件 -->
+      <!-- Render the child component -->
       <component
         :is="SearchItemConfig[schemaItem.option?.comType].component"
         ref="searchComList"
@@ -12,7 +12,7 @@
       />
     </el-form-item>
 
-    <!-- 操作区域 -->
+    <!-- Action area -->
     <el-form-item>
       <el-button type="primary" plain class="search-btn" @click="search"> 搜索 </el-button>
       <el-button type="primary" plain class="reset-btn" @click="reset"> 重置 </el-button>
@@ -26,20 +26,20 @@ import SearchItemConfig from './search-item-config'
 
 const props = defineProps({
   /**
-     * schema 字段如下
+     * Schema field reference
      *  schema: {
-          // 数据源结构
+          // Data structure
           type: 'object',
           properties: {
             key: {
-              ...schema, // 标准的schema字段
-              type: '', // 字段类型
-              label: '', // 字段中文名
-              // 字段在search-bar中的配置
+              ...schema, // Standard JSON Schema fields
+              type: '', // Field type
+              label: '', // Field label
+              // Field options for the search bar
               option: {
-                ...eleComponentConfig, // 标准的 el-component 配置
-                comType: '', // 配置组件类型
-                default: '' // 默认值
+                ...eleComponentConfig, // Element component props
+                comType: '', // Component type
+                default: '' // Default value
               },
             },
             ...other

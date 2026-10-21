@@ -1,23 +1,23 @@
 import { createApp } from 'vue'
 
-// 引入element-ui
+// Import Element Plus
 import ElementPlus from 'element-plus'
 import 'element-plus/theme-chalk/index.css'
 import 'element-plus/theme-chalk/dark/css-vars.css'
 import '$elpisAsserts/dark/css-vars.css'
-// 引入 custom.css
+// Import custom.css
 import '$elpisAsserts/custom.css'
 
-// 引入 pinia
+// Import Pinia
 import pinia from '$elpisStore'
 
 import { createRouter, createWebHistory } from 'vue-router'
 
 /**
- * vue 主入口, 用于创建vue实例, 并挂载到dom上
- * @param {Object} pageComponent - 页面组件
- * @param {Array} routes - 路由
- * @param {Array} libs - 不同页面依赖不同的组件库
+ * Create the Vue application and mount it to the DOM
+ * @param {Object} pageComponent - Root page component
+ * @param {Array} routes - Route definitions
+ * @param {Array} libs - Component libraries required by the page
  */
 
 export default (pageComponent, { routes, libs }) => {
@@ -25,7 +25,7 @@ export default (pageComponent, { routes, libs }) => {
   app.use(ElementPlus)
   app.use(pinia)
 
-  // 根据 libs 引入不同的库
+  // Register the libraries specified in libs
   if (libs && libs.length) {
     for (let i = 0; i < libs.length; ++i) {
       app.use(libs[i])
@@ -34,7 +34,7 @@ export default (pageComponent, { routes, libs }) => {
 
   if (routes && routes.length) {
     const router = createRouter({
-      history: createWebHistory(), // 使用 history 模式
+      history: createWebHistory(), // Use HTML5 history mode
       routes
     })
     app.use(router)

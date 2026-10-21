@@ -1,14 +1,14 @@
 const path = require("path");
 /**
- * 加载所有中间件
+ * Register global middleware
  * @param {*} app 
  */
 module.exports = (app) => {
-  // 静态资源路径 在app/public/static下
+  // Serve static assets from app/public
   const KoaStatic = require("koa-static");
   app.use(KoaStatic(path.resolve(process.cwd(), "./app/public")));
 
-  // 模板渲染引擎
+  // Template rendering engine
   const koaNunjucks = require("koa-nunjucks-2");
   app.use(
     koaNunjucks({
@@ -21,7 +21,7 @@ module.exports = (app) => {
     })
   );
 
-  // 解析ctx.request.body
+  // Parse ctx.request.body
   const bodyParser = require("koa-bodyparser");
   app.use(
     bodyParser({
@@ -30,16 +30,16 @@ module.exports = (app) => {
     })
   );
 
-  // 错误处理
+  // Error handling
   app.use(app.middlewares.errorHandler);
 
-  // API 签名合法性校验
+  // API signature validation
   app.use(app.middlewares.apiSignVerify);
 
-  // API 参数校验 转移到 index.js router加载之后
-  // 再次修改 放到routerLoader之后 会导致之前进来的参数没法校验 
+  // Validate API parameters before dispatching routes
+  // Validate dynamic route parameters within the corresponding route middleware
   app.use(app.middlewares.apiParamsVerify);
 
-  // 处理项目相关内容
+  // Handle project-specific requests
   app.use(app.middlewares.projectHandler);
 };

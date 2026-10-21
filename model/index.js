@@ -1,33 +1,33 @@
 /**
- * 该文件用于 解析 model 配置, 并返回组织且继承后的数据结构
+ * Parse model configuration and return the merged model/project structure
  */
 const glob = require('glob')
 const path = require('path')
 const _ = require('lodash')
 const { sep } = path
 
-// 整理 project 要继承 model 的配置
+// Merge inherited model configuration into each project
 const projectExtendModel = (model, project) => {
   return _.mergeWith({}, model, project, (modelValue, projValue) => {
-    //  处理 数组 合并的 特殊情况
+    //  Handle array merging by item key
     if (Array.isArray(modelValue) && Array.isArray(projValue)) {
       let result = []
 
-      // 因为 project 继承 model 的配置, 所以需要把 model 的配置合并到 result 中
+      // Include inherited model entries in the merged result
 
-      // project 有key , model 也有 key => 修改 (重载)
-      // project 有key , model 没有 key => 添加 (新增)
-      // project 没有key , model 有 key => 合并 (继承)
+      // Key in both project and model: override the model entry
+      // Key only in project: add a new entry
+      // Key only in model: inherit the model entry
 
-      // 处理 重载 和 继承
+      // Apply overrides and inherited entries
       for (let i = 0; i < modelValue.length; i++) {
         let modelItem = modelValue[i]
         const projectItem = projValue.find((projectItem) => projectItem.key === modelItem.key)
-        // 如果 projectItem 存在, 则递归调用 projectExtendModel 合并
+        // Recursively merge matching project and model entries
         result.push(projectItem ? projectExtendModel(modelItem, projectItem) : modelItem)
       }
 
-      // 处理 新增
+      // Add project-only entries
       for (let i = 0; i < projValue.length; i++) {
         const projectItem = projValue[i]
         const modelItem = modelValue.find((modelItem) => modelItem.key === projectItem.key)
@@ -42,7 +42,7 @@ const projectExtendModel = (model, project) => {
 }
 
 /**
- * 解析 model 配置, 并返回组织且继承后的数据结构
+ * Parse model configuration and return the merged model/project structure
  *  [{
  *      model:${model},
  *      project:{
@@ -59,9 +59,9 @@ module.exports = (app) => {
     if (file.indexOf('index.js') > -1) {
       return
     }
-    // 统一处理斜杠问题
+    // Normalize path separators
     const normalizedFile = file.replace(/\//g, '/')
-    // 区分配置类型 (model / project)
+    // Determine the configuration type: model or project
     const type = normalizedFile.indexOf(`/project/`) > -1 ? 'project' : 'model'
     if (type === 'project') {
       const modelKey = normalizedFile.match(/\/model\/(.*?)\/project\//)?.[1]
@@ -70,35 +70,35 @@ module.exports = (app) => {
       let modelItem = modelList.find((item) => item.model?.key === modelKey)
 
       if (!modelItem) {
-        // 初始化 模型结构
+        // Initialize the model structure
         modelItem = {}
         modelList.push(modelItem)
       }
       if (!modelItem.project) {
-        // 初始化 项目结构
+        // Initialize the project structure
         modelItem.project = {}
       }
       modelItem.project[projectKey] = require(path.resolve(file))
-      modelItem.project[projectKey].key = projectKey // 注入项目key
-      modelItem.project[projectKey].modelKey = modelKey // 注入模型key
+      modelItem.project[projectKey].key = projectKey // Set the project key
+      modelItem.project[projectKey].modelKey = modelKey // Set the model key
     }
-    //  output->file D:/code/eplis/model/buiness/model.js 取  /model/buiness/model.js 中间夹住的
+    //  Extract the model key from a path such as /model/business/model.js
     if (type === 'model') {
       const modelKey = normalizedFile.match(/\/model\/(.*?)\/model\.js/)?.[1]
 
       let modelItem = modelList.find((item) => item.model?.key === modelKey)
 
       if (!modelItem) {
-        // 初始化 模型结构
+        // Initialize the model structure
         modelItem = {}
         modelList.push(modelItem)
       }
       modelItem.model = require(path.resolve(file))
-      modelItem.model.key = modelKey // 注入模型key
+      modelItem.model.key = modelKey // Set the model key
     }
   })
 
-  // 整理 project 要继承 model 的配置
+  // Merge inherited model configuration into each project
 
   modelList.forEach((item) => {
     const { project, model } = item

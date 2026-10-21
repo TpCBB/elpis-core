@@ -6,29 +6,29 @@ const sep = path.sep
 /**
 /**
  * router loader
- * @param {object} app koa实例
+ * @param {object} app Koa application
  *
- * 文件目录: app/router/**.js
+ * File location: app/router
  *
- * 解析 app/router/**.js 加载到KoaRouter
+ * Load route definitions into Koa Router
  *
  */
 module.exports = (app) => {
-  // 实例化koarouter
+  // Create the Koa Router instance
   const router = new KoaRouter()
 
-  // 读取 业务中 app/router/**.js目录下的所有文件
+  // Discover application route files under app/router
   const BussinessRouterPath = path.resolve(app.businessDir, `.${sep}router`)
   const BussinessFileList = glob.sync(path.resolve(BussinessRouterPath, `.${sep}**${sep}**.js`))
 
-  // 读取 核心中 app/router/**.js目录下的所有文件
+  // Discover core route files under app/router
   const ElpisRouterPath = path.resolve(__dirname, `..${sep}..${sep}app${sep}router`)
   const ElpisFileList = glob.sync(path.resolve(ElpisRouterPath, `.${sep}**${sep}**.js`))
 
-  // router目录下所有文件
+  // All route definition files
   const fileList = [...BussinessFileList, ...ElpisFileList]
 
-  // 注册router
+  // Register routes
   fileList.forEach((file) => {
     /**
      * eg. file: app/router/api.js
@@ -40,13 +40,13 @@ module.exports = (app) => {
     require(path.resolve(file))(app, router)
   })
 
-  // 路由404
+  // Handle unmatched routes
   router.all('*', async (ctx, next) => {
-    ctx.status = 302 // 临时重定向
+    ctx.status = 302 // Temporary redirect
     ctx.redirect(`${app?.options?.homePage ?? '/'}`)
   })
 
-  // 挂载到app实例上
+  // Attach the router to the Koa application
   app.use(router.routes())
-  app.use(router.allowedMethods()) // 处理405和501
+  app.use(router.allowedMethods()) // Handle HTTP 405 and 501 responses
 }

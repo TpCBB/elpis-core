@@ -1,234 +1,262 @@
-# Eplis
+# Elpis Core
 
-一个基于 Vue 3 + Koa2 的全栈项目。
+Elpis Core is a schema-driven admin application framework built with Vue 3, Element Plus, Koa 2, and Webpack 5. It provides reusable dashboard layouts, configurable CRUD views, and a backend-for-frontend (BFF) layer for applications with shared UI and API conventions.
 
-### model 配置
+The package is exposed as `@tpccool/elpis`. This repository contains the reusable core; application-specific models, API implementations, and data sources belong in the consuming application.
 
-```javascript
-/* eslint-disable */
+## Core capabilities
 
-const docs = {
-  module: 'dashboard', // 模板类型, 不同模板类型对应不同的模板
-  name: '', // 模块名称
-  desc: '', // 模块描述
-  icon: '', // 模块图标
-  homepage: '', // 模块首页
-  // 头部菜单 header-container
-  menu: [
-    {
-      key: '', //菜单唯一描述
-      name: '', //菜单名称
-      menuType: '', // 枚举值 group 分组, module 模块
+- **Schema-driven views:** configure table columns, search fields, create/edit forms, and detail panels from a shared field schema.
+- **Dashboard composition:** combine grouped menus, sidebar navigation, custom views, and embedded iframe views.
+- **Model inheritance:** share a base model across projects, override matching configuration entries by key, and add project-specific entries.
+- **Layered backend:** load configuration, extensions, services, controllers, middleware, route schemas, and routes by directory convention.
+- **Request handling:** validate API parameters with JSON Schema and Ajv, verify request signatures, and return consistent response envelopes.
+- **Frontend build pipeline:** discover multiple page entry points, generate HTML templates for Koa rendering, support development hot updates, and split production assets into dependency, shared, and runtime chunks.
 
-      // menuType 为 group 时, 需要配置以下属性
-      subMenu: [
-        {
-          // 可递归 menuItem
-          //...
-        }
-      ],
+## Technology stack
 
-      // menuType 为 module 时, 需要配置以下属性
-      moduleType: '', // 枚举值: schema/custom/iframe/sider
+| Layer | Technologies |
+| --- | --- |
+| UI | Vue 3, Element Plus, Less |
+| State and routing | Pinia, Vue Router |
+| HTTP | Axios |
+| Server | Koa 2, Koa Router, Nunjucks |
+| Validation | JSON Schema, Ajv |
+| Build | Webpack 5, Babel, Vue Loader |
+| Checks | ESLint, Mocha, Supertest |
 
-      // moduleType 为 custom 时, 需要配置以下属性
-      customConfig: {},
+## Repository structure
 
-      // moduleType 为 iframe 时, 需要配置以下属性
-      iframeConfig: {},
-
-      // moduleType 为 schema 时, 需要配置以下属性
-      schemaConfig: {
-        api: '', // 数据源 (遵循 RESTFUL)
-        schema: {
-          // 数据源结构
-          type: 'object',
-          properties: {
-            key: {
-              ...schema, // 标准的schema字段
-              type: '', // 字段类型
-              label: '', // 字段中文名
-              // 字段在table中的配置
-              tableOption: {
-                ...elTableColumnConfig, // 标准的 el-table-column 配置
-                visible: true // 是否显示
-              },
-              // 字段在search-bar中的配置
-              searchOption: {
-                ...eleComponentConfig, // 标准的 el-component 配置
-                comType: '', // 配置组件类型
-                default: '', // 默认值
-
-                // 如果 comType 为 select, 需要配置以下属性
-                enumList: [
-                  {
-                    label: value
-                  }
-                ]
-              },
-              // 字段在不同动态 component 中的相关配置, 前缀对应 componentConfig 中键值
-              // 例如: componentConfig.createForm 对应 createFormOption
-              // 字段在 createForm 中的相关配置
-              createFormOption: {
-                ...eleComponentConfig, // 标准的 el-component 配置, 可以兼容原 element-ui 的属性
-                comType: '', // 控件类型 input/select/input-number
-                visible: 'true', // 是否显示 默认为 true
-                disabled: 'false', // 是否禁用 默认为 false
-
-                // comType 为 select 的时候
-                enumList: [] // 枚举列表
-              },
-              // 字段在editForm中的相关配置
-              editFormOption: {
-                ...eleComponentConfig, // 标准的 el-component 配置, 可以兼容原 element-ui 的属性
-                comType: '', // 控件类型 input/select/input-number
-                visible: 'true', // 是否显示 默认为 true
-                disabled: 'false', // 是否禁用 默认为 false
-                
-                // comType 为 select 的时候
-                enumList: [] // 枚举列表
-              },
-              // 字段在 detail-panel 中的相关配置
-              detailPanelOption: {
-                ...eleComponentConfig, // 标准的 el-component 配置, 可以兼容原 element-ui 的属性
-                visible: 'true', // 是否显示 默认为 true
-              },
-              ...otherOption
-            },
-            ...otherKey
-          },
-          required: [] // 必填字段
-        },
-        // table 相关配置
-        tableConfig: {
-          headerButtons: [
-            {
-              label: '', //按钮中文名
-              eventKey: '', // 事件名称
-              // 按钮配置
-              eventOption: {
-                // 当 eventKey 为 showComponent 时, 需要配置以下属性
-                comName: ""
-              },
-              ...elButtonConfig // 标准的 el-button 配置
-            },
-            ...otherButtons
-          ], // 头部按钮
-          rowButtons: [
-            {
-              label: '', // 按钮中文名
-              eventKey: '', // 按钮事件名
-              eventOption: {
-                // 当 eventKey 为 showComponent 时, 需要配置以下属性
-                comName: "",
-                // 当 eventKey 为 'edit' 时, 需要配置以下属性
-                params: {
-                  // 以下为请求参数
-                  /**
-                   * eg.  request({
-                   *  url: 'xxx',
-                   *  method: 'edit',
-                   *  data: {
-                   *    paramKey: rowValueKey
-                   *  }
-                   * })
-                   */
-                  // paramKey = 参数的键值
-                  // rowValueKey = 参数值, 格式为 schema::tableKey 到 table 中找到相应的字段
-                  paramKey: rowValueKey
-                }
-              }, // 按钮配置
-              ...elButtonConfig // 标准的 el-button 配置
-            },
-            ...otherButtons
-          ] // 行按钮
-        },
-        componentConfig: {
-          // create-form 表单相关配置
-          createForm: {
-            title: '', // 表单标题
-            saveBtnText: ''
-          },
-          // edit-form 表单相关配置
-          editForm: {
-            title: '', // 表单标题
-            saveBtnText: '',
-            mainKey: '', // 主键字段
-            mainValue: '' // 主键值
-          },
-          // detail-panel 详情面板
-          detailPanel: {
-            title: '', // 详情标题
-            mainKey: '', // 主键字段
-          }
-        } //模块组件
-      },
-
-      // moduleType 为 sider 时, 需要配置以下属性
-      siderConfig: {
-        menu: [
-          {
-            // 可递归 menuItem
-          }
-        ]
-      }
-    }
-    //...
-  ]
-}
-
+```text
+app/
+  controller/       Request handlers and the base controller
+  service/          Business logic and the base service
+  middleware/       Validation, signature checks, and error handling
+  router/           API and page routes
+  router-schema/    API request schemas
+  extend/           Application extensions, including logging
+  pages/            Vue page entry points, layouts, stores, and widgets
+  view/             HTML template used by Webpack
+  webpack/          Development and production build helpers
+config/             Default and environment-specific configuration
+elpis-core/         Koa initialization and convention-based loaders
+model/              Model discovery and project inheritance
+test/              Controller integration tests
+index.js            Public SDK exports
 ```
 
-### 启动BFF服务
+## SDK usage
+
+The following examples belong in a consuming application that has `@tpccool/elpis` installed and supplies its own model and API configuration.
+
+### Start the BFF server
 
 ```javascript
-const { serverStart } = require("@tpccool/elpis");
+const { serverStart } = require('@tpccool/elpis')
 
 const app = serverStart({
-  name: "",
-  homePage: "",
-});
-
+  name: 'Example Admin',
+  homePage: '/view/dashboard?proj_key=example'
+})
 ```
 
-### 自定义服务端
+`serverStart(options)` returns the Koa application. The server uses `HOST=127.0.0.1` and `PORT=8080` unless overridden through environment variables. Set `NODE_ENV` explicitly to `local`, `beta`, or `production` to select the corresponding configuration file.
 
-- router-schema
-- router
-- controller
-- service
-- extend
-- config
-
-### 前端构建
+### Build the frontend
 
 ```javascript
-const { frontendBuild } = require("@tpccool/elpis");
+const { frontendBuild } = require('@tpccool/elpis')
 
-frontendBuild(process.env.NODE_ENV);****
+frontendBuild(process.env.NODE_ENV)
 ```
 
-### 自定义扩展页面
+Use `NODE_ENV=local` to start the development asset server on port `9002`. Use `NODE_ENV=production` for a production build. Run the BFF server and the development asset server in separate processes during development.
 
-- 在 `app/pages/` 目录下写入口 entry.xxx.js
+The build discovers `app/pages/**/entry.*.js` files and generates templates under `app/public/dist/`. Koa renders these templates for `/view/:page` routes; Vue mounts the page and handles client-side routing.
 
-### dashboard / custom-view 自定义扩展页面
+### Reuse the server base classes
 
-- 在 `app/pages/dashboard/xxx` 下写页面
+```javascript
+const { Controller } = require('@tpccool/elpis')
 
-### dashboard / schema-view /components 动态组件扩展
+module.exports = (app) => {
+  return class ExampleController extends Controller.Base(app) {
+    async get(ctx) {
+      this.success(ctx, { name: 'Example' })
+    }
+  }
+}
+```
 
-1. 在 `app/pages/dashboard/complex-view/schema-view/components` 下写组件
-2. 配置到 `app/pages/dashboard/complex-view/schema-view/components/components-config.js`
+`Controller.Base(app)` provides `success` and `fail` response helpers. `Service.Base(app)` provides the service base class.
 
-### schema-form 控件扩展
+## Model and project configuration
 
-1. 在 `app/widgets/schema-form/complex-view` 下写控件
-2. 配置到 `app/widgets/schema-form/form-item-config.js`
+Place shared model configuration in `model/<model-key>/model.js` and project configuration in `model/<model-key>/project/<project-key>.js` in the consuming application.
 
-### schema-search-bar 控件过站
+Projects inherit their model configuration. Arrays are merged by each item's `key`: matching items are merged recursively, model-only items are inherited, and project-only items are appended.
 
-1. 在 `app/widgets/schema-search-bar/complex-view` 写控件
-2. 配置到 `app/widgets/schema-search-bar/search-item-config.js`
+The following example illustrates a dashboard model with a schema-driven product view. The application must implement the referenced product API.
 
-##
+```javascript
+module.exports = {
+  module: 'dashboard',
+  name: 'Product Admin',
+  desc: 'Product management dashboard',
+  homePage: '/view/dashboard/schema?proj_key=example&key=products',
+  menu: [
+    {
+      key: 'products',
+      name: 'Products',
+      menuType: 'module',
+      moduleType: 'schema',
+      schemaConfig: {
+        api: '/api/proj/product',
+        schema: {
+          type: 'object',
+          properties: {
+            id: {
+              type: 'number',
+              label: 'ID',
+              tableOption: { visible: true },
+              detailPanelOption: { visible: true }
+            },
+            name: {
+              type: 'string',
+              label: 'Name',
+              tableOption: { visible: true },
+              searchOption: { comType: 'input', default: '' },
+              createFormOption: { comType: 'input', visible: true },
+              editFormOption: { comType: 'input', visible: true },
+              detailPanelOption: { visible: true }
+            }
+          },
+          required: ['name'],
+          tableConfig: {
+            headerButtons: [
+              {
+                label: 'Create product',
+                eventKey: 'ShowComponent',
+                eventOption: { comName: 'createForm' }
+              }
+            ],
+            rowButtons: [
+              {
+                label: 'Edit',
+                eventKey: 'ShowComponent',
+                eventOption: { comName: 'editForm' }
+              },
+              {
+                label: 'Details',
+                eventKey: 'ShowComponent',
+                eventOption: { comName: 'detailPanel' }
+              },
+              {
+                label: 'Delete',
+                eventKey: 'remove',
+                eventOption: { params: { product_id: 'schema::id' } }
+              }
+            ]
+          },
+          componentConfig: {
+            createForm: {
+              title: 'Create product',
+              saveBtnText: 'Create'
+            },
+            editForm: {
+              title: 'Edit product',
+              saveBtnText: 'Save',
+              mainKey: 'id'
+            },
+            detailPanel: {
+              title: 'Product details',
+              mainKey: 'id'
+            }
+          }
+        }
+      }
+    }
+  ]
+}
+```
+
+### Configuration reference
+
+| Setting | Purpose |
+| --- | --- |
+| `menuType: 'group'` | Groups nested items in `subMenu`. |
+| `menuType: 'module'` | Displays a module selected by `moduleType`. |
+| `moduleType: 'schema'` | Uses `schemaConfig` to render a CRUD view. |
+| `moduleType: 'custom'` | Navigates to the route in `customConfig.path`. |
+| `moduleType: 'iframe'` | Embeds the URL in `iframeConfig.path`. |
+| `moduleType: 'sider'` | Renders sidebar items from `siderConfig.menu`. |
+| `tableOption` | Field visibility and Element Plus table column props. |
+| `searchOption` | Search control type, default value, and component props. |
+| `createFormOption` / `editFormOption` | Form control type, visibility, disabled state, and component props. |
+| `detailPanelOption` | Includes the field in the detail panel schema. |
+| `schema.required` | Required field names used by form validation. |
+| `schema.tableConfig` | Header buttons and row action buttons. |
+| `schema.componentConfig` | Titles, save button labels, and primary keys for dynamic components. |
+
+Form controls registered in the core are `input`, `inputNumber`, `select`, and `dateRange`. Search controls are `input`, `select`, `dynamicSelect`, and `dateRange`. Select controls accept an `enumList` of label/value options.
+
+Button options can include Element Plus button props. A `ShowComponent` event opens the component named by `eventOption.comName`. A `remove` event maps request parameters to row fields using `schema::<field-name>`.
+
+### CRUD API conventions
+
+For a configured base API such as `/api/proj/product`, the widgets issue these requests:
+
+| Action | Request |
+| --- | --- |
+| List | `GET /api/proj/product/list` with search values, `page`, and `pageSize` |
+| Details / edit data | `GET /api/proj/product` with the configured primary key |
+| Create | `POST /api/proj/product` with form values |
+| Update | `PUT /api/proj/product` with form values |
+| Delete | `DELETE /api/proj/product` with mapped row values |
+
+Successful responses use `{ success: true, data, metadata }`. List responses provide an array in `data` and the total item count in `metadata.total`. The consuming application supplies endpoint implementations and persistence.
+
+## Extension points
+
+### Backend
+
+Add application modules under `app/router-schema`, `app/router`, `app/controller`, `app/service`, `app/extend`, and `app/middleware`. Register application global middleware in `app/middleware.js`.
+
+Controllers, services, and middleware are loaded into `app.controller`, `app.service`, and `app.middlewares`, respectively. Hyphenated and underscored file names are converted to camelCase. Extensions attach directly to the Koa application, such as `app.logger`.
+
+Use `config/config.default.js` for shared settings and `config/config.local.js`, `config/config.beta.js`, or `config/config.prod.js` for environment-specific overrides.
+
+### Frontend pages and routes
+
+- Add a page entry named `entry.<page-name>.js` under `app/pages/`.
+- Add custom dashboard views under `app/pages/dashboard/`.
+- Export a function from `app/pages/dashboard/router.js` to extend `{ routes, siderRoutes }`.
+- Provide application build overrides in `app/webpack.config.js`.
+
+### Dynamic components and controls
+
+| Extension | Core registry | Consuming application registry |
+| --- | --- | --- |
+| Schema view components | `app/pages/dashboard/complex-view/schema-view/complex-view/components/componentConfig.js` | `app/pages/dashboard/complex-view/schema-view/components/component-config.js` |
+| Form controls | `app/pages/widgets/schema-form/form-item-config.js` | `app/pages/widgets/schema-form/form-item-config.js` |
+| Search controls | `app/pages/widgets/schema-search-bar/search-item-config.js` | `app/pages/widgets/schema-search-bar/search-item-config.js` |
+
+Create the Vue component and register it with `{ component: YourComponent }` under the desired key. The frontend merges each application registry with the corresponding core registry.
+
+## Development checks
+
+Install dependencies with `npm install`, then run:
+
+```bash
+npm run lint
+```
+
+The controller integration tests require application model/project fixtures and the corresponding API routes. The core checkout does not include those application-specific fixtures. In a configured development workspace, run the tests with an explicit environment:
+
+```bash
+NODE_ENV=local ./node_modules/.bin/mocha 'test/**/*.js' --exit
+```
+
+## License
+
+ISC, as declared in `package.json`.

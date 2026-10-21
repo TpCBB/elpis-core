@@ -1,15 +1,15 @@
-// 引入核心模块
+// Import the core module
 const ElpisCore = require('./elpis-core')
 
-// 引入前端工程化方法
-// 会导致 webpack.base.js 中 entry 配置被覆盖
+// Import frontend build helpers
+// Eager imports can overwrite the entry configuration in config.base.js
 // const FEbuildDev = require('./app/webpack/dev.js')
 // const FEbuildProd = require('./app/webpack/prod.js')
 
 module.exports = {
   /**
-   * 启动服务
-   * @param {*} options 透传 配置
+   * Start the server
+   * @param {*} options Configuration passed to the core
    */
   serverStart(options = {}) {
     const app = ElpisCore.start(options)
@@ -17,7 +17,7 @@ module.exports = {
   },
 
   /**
-   * 服务端基础
+   * Server-side base classes
    */
   Controller: {
     Base: require('./app/controller/base.js')
@@ -28,7 +28,7 @@ module.exports = {
   },
 
   /**
-   * 编译构建前端工程
+   * Build the frontend application
    * @param {String} env local/production
    */
   frontendBuild(env) {

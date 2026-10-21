@@ -1,8 +1,8 @@
 module.exports = (app) => {
   /**
-   * 错误捕获
-   * @param {object} ctx 上下文
-   * @param {function} next 下一个中间件
+   * Catch errors
+   * @param {object} ctx Koa context
+   * @param {function} next Next middleware
    */
   return async (ctx, next) => {
     try {
@@ -13,14 +13,14 @@ module.exports = (app) => {
       app.logger.info(JSON.stringify(error));
       app.logger.error("[---- exception ----]", error);
       app.logger.error("[---- exception ----]", status, message, detail);
-      //   页面重定向
+      //   Redirect page requests
       if (message && message.indexOf("template not found") > -1) {
         ctx.status = 302;
         ctx.redirect(app.options?.homePage || "/");
         return;
       }
 
-      //   统一错误返回
+      //   Return a consistent error response
       ctx.status = 200;
       ctx.body = {
         success: false,

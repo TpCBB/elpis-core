@@ -1,70 +1,70 @@
 const Koa = require("koa");
 const path = require("path");
-const { sep } = path; // 路径分隔符, 在windows下是 \ 在mac下是 / 兼容斜杠
-const env = require("./env"); // 环境变量
+const { sep } = path; // Platform-specific path separator: backslash on Windows, slash on macOS
+const env = require("./env"); // Environment helpers
 
-const configLoader = require("./loader/config"); // 配置
-const extendLoader = require("./loader/extend"); // 扩展
-const serviceLoader = require("./loader/service"); // 服务
-const controllerLoader = require("./loader/controller"); // 控制器
-const routerSchemaLoader = require("./loader/router-schema"); // 路由Schema
-const middlewareLoader = require("./loader/middleware"); // 中间件
-const routerLoader = require("./loader/router"); // 路由
+const configLoader = require("./loader/config"); // Configuration
+const extendLoader = require("./loader/extend"); // Extensions
+const serviceLoader = require("./loader/service"); // Services
+const controllerLoader = require("./loader/controller"); // Controllers
+const routerSchemaLoader = require("./loader/router-schema"); // Route schemas
+const middlewareLoader = require("./loader/middleware"); // Middleware
+const routerLoader = require("./loader/router"); // Routes
 
 module.exports = {
   /**
-   * 启动参数
-   * @param {*} options 项目配置
+   * Startup options
+   * @param {*} options Project configuration
    */
   start(options = {}) {
-    // 实例化koa
+    // Create the Koa application
     const app = new Koa();
 
-    // 项目配置
+    // Project configuration
     app.options = options;
 
-    // 项目根目录 process.cwd() 当前工作目录
+    // Project root directory; defaults to process.cwd()
     app.baseDir = options.baseDir || process.cwd();
     console.log(`output->baseDir`, app.baseDir);
 
-    // 项目业务目录
+    // Application source directory
     app.businessDir = path.resolve(app.baseDir, `.${sep}app`);
     console.log(`output->businessDir`, app.businessDir);
 
-    // 获取环境
+    // Get the environment
     app.env = env();
     console.log(`-- [start] env: ${app.env.get()} --`);
 
-    // 加载配置
+    // Load configuration
     configLoader(app);
     console.log(`-- [start] configLoader done --`);
 
-    // 加载扩展
+    // Load extensions
     extendLoader(app);
     console.log(`-- [start] extendLoader done --`);
 
-    // 加载服务
+    // Load services
     serviceLoader(app);
     console.log(`-- [start] serviceLoader done --`);
 
-    // 加载控制器
+    // Load controllers
     controllerLoader(app);
     console.log(`-- [start] controllerLoader done --`);
 
-    // 加载路由Schema
+    // Load route schemas
     routerSchemaLoader(app);
     console.log(`-- [start] routerSchemaLoader done --`);
 
-    // 加载中间件
+    // Load middleware
     middlewareLoader(app);
     console.log(`-- [start] middlewareLoader done --`);
 
-    // 加载 elpis 全局中间件
+    // Register core global middleware
     const elpisMiddleware = require(path.resolve(__dirname, `..${sep}app${sep}middleware.js`))
     elpisMiddleware(app)
     console.log(`-- [start] load elpis global middleware done`);
 
-    // 加载 业务 中的全局中间件
+    // Register application global middleware
     try {
       require(`${app.businessDir}${sep}middleware.js`)(app);
       console.log(`-- [start] load business global middleware done`);
@@ -74,15 +74,15 @@ module.exports = {
     }
  
 
-    // 注册路由(加载路由之前要加载中间件)
+    // Register routes after loading middleware
     routerLoader(app);
 
-    // 注册参数校验中间件 需要再routerLoader之后 这样才能获取到 /:id 这种路由参数 // 再次修改 在需要校验/:id的地方单独校验中间件 避免不必要的性能开销
+    // Validate dynamic parameters such as /:id within the relevant routes to avoid unnecessary global validation
     // app.use(app.middlewares.apiParamsVerify)
     
     console.log(`-- [start] routerLoader done --`);
 
-    // 启动服务
+    // Start the server
     try {
       const port = process.env.PORT || 8080;
       const host = process.env.HOST || "127.0.0.1";

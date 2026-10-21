@@ -39,7 +39,7 @@ const save = async () => {
   if (loading.value) {
     return
   }
-  // 校验表单
+  // Validate the form
   if (!schemaFormRef.value.validate()) {
     return
   }

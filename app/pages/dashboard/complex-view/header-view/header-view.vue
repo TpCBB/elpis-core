@@ -1,7 +1,7 @@
 <template>
   <header-container :title="projectName">
     <template #menu-content>
-      <!-- 根据 menuStore.menuList 渲染 -->
+      <!-- Render items from menuStore.menuList -->
       <el-menu :default-active="activeKey" mode="horizontal" :ellipsis="false" @select="onMenuSelect">
         <template v-for="item in menuStore.menuList">
           <sub-menu v-if="item.subMenu && item.subMenu.length > 0" :key="item.key" :menu-item="item"></sub-menu>
@@ -10,7 +10,7 @@
       </el-menu>
     </template>
     <template #setting-content>
-      <!-- 根据 projectStore.projectList 渲染 -->
+      <!-- Render items from projectStore.projectList -->
       <el-dropdown @command="handleProjectCommand">
         <span class="project-list">
           {{ projectName }}
